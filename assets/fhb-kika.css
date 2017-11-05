@@ -1,0 +1,24 @@
+#snippet-logs {
+	display: none;
+	margin-top: 1.5em;
+}
+
+#snippet-logs .log-error {
+	color: red;
+}
+
+.text-danger {
+	color: red;
+}
+
+.text-success {
+	color: green;
+}
+
+.box-form input {
+	width: 100%;
+}
+
+.box-form select {
+	width: 100%;
+}
