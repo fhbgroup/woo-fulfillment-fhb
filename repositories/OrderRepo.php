@@ -137,7 +137,7 @@ class OrderRepo
 
 		$data = [
 			'id' => $order->id,
-			'variableSymbol' => $order->id,
+			'variableSymbol' => $order->get_order_number(),
 			'name' => $name,
 			'email' => $order->billing_email,
 			'street' => $street,
