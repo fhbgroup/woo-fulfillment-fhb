@@ -32,7 +32,12 @@ class Orders
 		add_action('wp_ajax_fhb_kika_export_orders', [$this, 'export']);
 		add_action('wp_ajax_fhb_kika_export_order', [$this, 'exportSingle']);
 		add_action('woocommerce_thankyou', [$this, 'exportAfterCreate']);
-		add_action( 'init', [$this, 'notification'], 10000);
+		add_action('init', [$this, 'notification'], 10000);
+
+		foreach(get_option('kika_status_delete', []) as $status) {
+			$action = 'woocommerce_order_status_' . preg_replace('~^wc-~', '', $status);
+			add_action($action, [$this, 'delete']);
+		}
 	}
 
 
@@ -135,6 +140,24 @@ class Orders
 	}
 
 
+	public function delete($id)
+	{
+		if (get_post_meta($id, OrderRepo::STATUS_KEY, true) != OrderRepo::STATUS_SYNCED) {
+			return;
+		}
+
+		$exportId = get_post_meta($id, OrderRepo::API_ID_KEY, true);
+
+		try {
+			$this->orderApi->delete($exportId ? $exportId : $id);
+			update_post_meta($id, OrderRepo::STATUS_KEY,  OrderRepo::STATUS_DELETED);
+		} catch (RestApiException $e) {
+			update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
+			update_post_meta($id, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
+		}
+	}
+
+
 	public function notification()
 	{
 		if (isset($_GET['action']) and $_GET['action'] == 'kika-notification') {
@@ -194,10 +217,11 @@ class Orders
 				$this->orderApi->create($order);
 				update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SYNCED);
 				update_post_meta($id, OrderRepo::TOKEN_KEY, $token);
-				update_post_meta($id, OrderRepo::EXPORT_ID_KEY, $token);
+				update_post_meta($id, OrderRepo::API_ID_KEY, $exportId);
 
 			} catch (RestApiException $e) {
 				update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
+				update_post_meta($id, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
 				$logs[] = $this->createErrorMessage($e, $order, $single);
 			}
 		}

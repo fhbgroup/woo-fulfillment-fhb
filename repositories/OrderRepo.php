@@ -10,11 +10,13 @@ class OrderRepo
 {
 
 	const STATUS_KEY = 'fhb-api-status';
+	const ERROR_KEY = 'fhb-api-error';
 	const EXPORT_KEY = 'fhb-api-export';
-	const EXPORT_ID_KEY = 'fhb-api-id';
+	const API_ID_KEY = 'fhb-api-id';
 	const TOKEN_KEY = 'fhb-api-token';
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
+	const STATUS_DELETED = 'deleted';
 
 
 	public function fetch($args)

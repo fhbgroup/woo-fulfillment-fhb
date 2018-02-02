@@ -128,6 +128,19 @@
 				</td>
 			</tr>
 
+			<tr>
+				<th><label for="confirmed">Zrušenie objednávky</label></th>
+				<td>
+					<select name="delete[]" id="" multiple size="<?php echo count($statuses) ?>">
+						<?php foreach($statuses as $key => $value): ?>
+							<option value="<?php echo $key ?>" <?php selected(true, in_array($key, get_option('kika_status_delete', []))) ?>>
+								<?php echo $value ?>
+							</option>
+						<?php endforeach ?>
+					</select>
+				</td>
+			</tr>
+
 		</table>
 
 		<h2>Platobné metódy</h2>

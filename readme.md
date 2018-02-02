@@ -24,6 +24,7 @@ Záložka nastavenie
    - Notifikácia confirmed na Spracováva sa
    - Notifikácia sent na Vybavená
    - Notifikácia returned na Zrušenia
+- Zrušenie objednávky - nastavenie statusov pri ktorých sa objednávka vymaže zo Zoe. Je možné len v prípade, že je v Zoe v stave Pending.
 - Platobne metódy - nastavenie pri ktorej metóde sa posiela suma do API. Defaultne je zapnutá Dobierka
 
 Záložka produkty

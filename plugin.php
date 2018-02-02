@@ -21,6 +21,7 @@ define('KIKA_PLUGIN_URL', plugin_dir_url( __FILE__));
 
 register_activation_hook(__FILE__, function() {
 	update_option('kika_method_cod', true);
+	update_option('kika_status_delete', ['wc-cancelled', 'wc-failed']);
 });
 
 add_action('admin_enqueue_scripts', function() {
@@ -60,7 +61,6 @@ if (get_option('kika_sandbox')) {
 	$restApi->setEndpoint('https://system-dev.fhb.sk/api/v2');
 }
 
-$orderApi = new OrderApi($restApi);
 $productApi = new ProductApi($restApi);
 $orderApi = new OrderApi($restApi);
 $infoApi = new InfoApi($restApi);

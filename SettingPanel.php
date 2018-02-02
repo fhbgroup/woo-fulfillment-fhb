@@ -62,6 +62,7 @@ class SettingPanel
 		update_option('kika_service', sanitize_text_field($_POST['service']));
 		update_option('kika_sandbox', sanitize_text_field($_POST['sandbox']));
 		update_option('kika_prefix', sanitize_text_field($_POST['prefix']));
+		update_option('kika_status_delete', is_array($_POST['delete']) ? array_map('sanitize_text_field', $_POST['delete']) : null);
 
 		$gateways = new WC_Payment_Gateways();
 		foreach($gateways->get_available_payment_gateways() as $method) {
