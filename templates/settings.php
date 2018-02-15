@@ -38,16 +38,6 @@
 
 		<table class="form-table">
 			<tr>
-				<th><label for="order_send">Objednávky</label></th>
-				<td>
-					<label>
-						<input name="order_send" type="checkbox" value="1" <?php echo get_option('kika_order_send') ? 'checked' : '' ?> />
-						Odosielať po vytvorení
-					</label>
-				</td>
-			</tr>
-
-			<tr>
 				<th><label for="service">Default prepravca</label></th>
 				<td>
 					<select name="service">

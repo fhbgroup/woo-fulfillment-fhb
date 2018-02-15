@@ -30,8 +30,8 @@ class Orders
 		add_action('admin_menu', [$this, 'addMenuItems']);
 		add_action('add_meta_boxes', [$this, 'addMetaBoxes']);
 		add_action('wp_ajax_fhb_kika_export_orders', [$this, 'export']);
+        add_action('wp_job_fhb_kika_export_order', [$this, 'jobExport']);
 		add_action('wp_ajax_fhb_kika_export_order', [$this, 'exportSingle']);
-		add_action('woocommerce_thankyou', [$this, 'exportAfterCreate']);
 		add_action('init', [$this, 'notification'], 10000);
 
 		foreach(get_option('kika_status_delete', []) as $status) {
@@ -106,6 +106,17 @@ class Orders
 	}
 
 
+    public function jobExport()
+    {
+        set_time_limit(0);
+        $export = time();
+        $orders = $this->orderRepo->fetchForExport($export, 200);
+
+        $this->exportOrders($orders, $export);
+        wp_die();
+    }
+
+
 	public function exportSingle()
 	{
 		$id = (int)$_GET['order'];
@@ -128,15 +139,6 @@ class Orders
 
 		echo json_encode($result);
 		wp_die();
-	}
-
-
-	public function exportAfterCreate($id)
-	{
-		if (get_option('kika_order_send') and !get_post_meta($id, OrderRepo::STATUS_KEY, true)) {
-			$order = $this->orderRepo->fetchById($id);
-			$this->exportOrders([$order], time(), true);
-		}
 	}
 
 

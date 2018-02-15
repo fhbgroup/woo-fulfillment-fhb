@@ -17,6 +17,16 @@ class OrderRepo
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
 	const STATUS_DELETED = 'deleted';
+    const SF_INVOICE_KEY = 'wc_sf_invoice_regular';
+
+    private $sf_active = false;
+
+    public function __construct()
+    {
+        if(is_plugin_active('woocommerce-superfaktura/wc-superfaktura.php')) {
+            $this->sf_active = true;
+        }
+    }
 
 
 	public function fetch($args)
@@ -137,6 +147,10 @@ class OrderRepo
 		$street.= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
 		$street.= $order->shipping_state ? ', ' . $order->shipping_state : '';
 
+        if ($this->sf_active) {
+            $invoiceLink = get_post_meta($order->id, OrderRepo::SF_INVOICE_KEY, true);
+        }
+
 		$data = [
 			'id' => $order->id,
 			'variableSymbol' => $order->get_order_number(),
@@ -147,7 +161,7 @@ class OrderRepo
 			'city' => $order->shipping_city,
 			'psc' => $order->shipping_postcode,
 			'phone' => $order->billing_phone ? $order->billing_phone : null,
-			'invoiceLink' => '',
+			'invoiceLink' => $invoiceLink ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->payment_method) ? $order->get_total() : 0,
 			'parcelService' => get_option('kika_service', null),
 		];

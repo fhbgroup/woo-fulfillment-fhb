@@ -22,6 +22,16 @@ define('KIKA_PLUGIN_URL', plugin_dir_url( __FILE__));
 register_activation_hook(__FILE__, function() {
 	update_option('kika_method_cod', true);
 	update_option('kika_status_delete', ['wc-cancelled', 'wc-failed']);
+
+    if (!wp_next_scheduled('wp_job_fhb_kika_export_order')) {
+        wp_schedule_event(time() + 3600, 'hourly', 'wp_job_fhb_kika_export_order');
+    }
+});
+
+register_deactivation_hook(__FILE__, function() {
+    if (wp_next_scheduled('wp_job_fhb_kika_export_order')) {
+        wp_clear_scheduled_hook('wp_job_fhb_kika_export_order');
+    }
 });
 
 add_action('admin_enqueue_scripts', function() {
@@ -39,6 +49,7 @@ require_once('repositories/ParcelServiceRepo.php');
 require_once('SettingPanel.php');
 require_once('Orders.php');
 require_once('Products.php');
+require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 use Kika\Api\RestApi;
 use Kika\Api\OrderApi;
