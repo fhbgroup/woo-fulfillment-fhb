@@ -14,39 +14,41 @@ Záložka nastavenie
 ------------------
 
 ![](images/setting.png)
+![](images/setting2.png)
 
 - API AppId a Secret podla zoe
 - Sandbox mod - slúži na testovanie. Ak je zapnutý, posiela plugin požiadavky na dev server.
-- Odosielať po vytvorení - voľba či sa ma objednávka odosielať hneď po vytvorení
-- Default prepravca - vyber štandardného prepravcu. Zoznam sa aktualizuje raz za 7 dni.
+- Default prepravca - vyber štandardného prepravcu. Zoznam sa aktualizuje raz za 7 dní.
 - Prefix API ID - pridá prefix k API ID. V prípade ak ma užívateľ viac obchodov aby neprišlo ku kolízii čísiel. 
 - Mapovanie statusov - tu sa dajú namapovať Kika API notify linky na Woocomerce statusy. Napr: 
    - Notifikácia confirmed na Spracováva sa
    - Notifikácia sent na Vybavená
    - Notifikácia returned na Zrušenia
 - Zrušenie objednávky - nastavenie statusov pri ktorých sa objednávka vymaže zo Zoe. Je možné len v prípade, že je v Zoe v stave Pending.
-- Platobne metódy - nastavenie pri ktorej metóde sa posiela suma do API. Defaultne je zapnutá Dobierka
+- Platobné metódy - nastavenie pri ktorej metóde sa posiela suma do API. Defaultne je zapnutá Dobierka
+
+Plugin odosiela objednávky pomocou jobu, raz za hodinu. Odosielajú sa všetky objednávky v stave Prijatá a Spracováva sa, ktoré boli vytvorené za posledných 48h.
 
 Záložka produkty
 ----------------
 
 ![](images/product.png)
 
-- Záložka slúži na prehlad a hromadný export produktov do systému.
+- Záložka slúži na prehľad a hromadný export produktov do systému.
 - Produkt sa dá alternatívne exportovať v detaile produktu.
-- Každý jednoduchý produkt musí mat pred exportom nastavene unikátne SKU. Nastavuje sa v Detail produktu/Údaje o produkte/Sklad/Katalógové číslo
+- Každý jednoduchý produkt musí mať pred exportom nastavene unikátne SKU. Nastavuje sa v Detail produktu/Údaje o produkte/Sklad/Katalógové číslo
 
 ![](images/simple.png)
 
-- Pri variabilných produktov musí mat nastavene SKU každá varianta. Nastavuje sa v Detail produktu/Údaje o produkte/Varianty/Katalógové číslo
+- Pri variabilných produktov musí mať nastavené SKU každá varianta. Nastavuje sa v Detail produktu/Údaje o produkte/Varianty/Katalógové číslo
 
 ![](images/variable.png)
 
 Záložka objednávky
 ------------------
 
-- Záložka slúži na prehlad a hromadný export objednávok do systému.
-- Exportujú sa neexportované objednávky v stave Prijatá a Spracováva sa
+- Záložka slúži na prehľad a hromadný export objednávok do systému.
+- Exportujú sa neexportované objednávky v stave Prijatá a Spracováva sa, vytvorené za posledných 48h.
 - Objednávka sa dá alternatívne exportovať v detaile objednávky, kde sa dajú upraviť tiež parametre exportu ak COD a dopravca.
 
 ![](images/order.png)
