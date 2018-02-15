@@ -30,7 +30,7 @@ class Orders
 		add_action('admin_menu', [$this, 'addMenuItems']);
 		add_action('add_meta_boxes', [$this, 'addMetaBoxes']);
 		add_action('wp_ajax_fhb_kika_export_orders', [$this, 'export']);
-        add_action('wp_job_fhb_kika_export_order', [$this, 'jobExport']);
+		add_action('wp_job_fhb_kika_export_order', [$this, 'jobExport']);
 		add_action('wp_ajax_fhb_kika_export_order', [$this, 'exportSingle']);
 		add_action('init', [$this, 'notification'], 10000);
 

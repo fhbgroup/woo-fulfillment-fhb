@@ -59,6 +59,11 @@ class OrderRepo
 			'posts_per_page' => $limit,
 			'post_status' => ['wc-pending', 'wc-processing'],
 
+			'date_query' => [
+				'before' => '-1 minute',
+				'after' => '-2 days',
+			],
+
 			'meta_query' => [
 				'relation' => 'AND',
 
