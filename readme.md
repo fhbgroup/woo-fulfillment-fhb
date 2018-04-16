@@ -48,7 +48,7 @@ Záložka objednávky
 ------------------
 
 - Záložka slúži na prehľad a hromadný export objednávok do systému.
-- Exportujú sa neexportované objednávky v stave Prijatá a Spracováva sa, vytvorené za posledných 48h.
+- Exportujú sa neexportované objednávky v stave Prijatá a Spracováva sa, staršie ako 2h a novšie ako 48h.
 - Objednávka sa dá alternatívne exportovať v detaile objednávky, kde sa dajú upraviť tiež parametre exportu ak COD a dopravca.
 
 ![](images/order.png)
