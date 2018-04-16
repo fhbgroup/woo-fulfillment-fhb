@@ -27,7 +27,7 @@ Záložka nastavenie
 - Zrušenie objednávky - nastavenie statusov pri ktorých sa objednávka vymaže zo Zoe. Je možné len v prípade, že je v Zoe v stave Pending.
 - Platobné metódy - nastavenie pri ktorej metóde sa posiela suma do API. Defaultne je zapnutá Dobierka
 
-Plugin odosiela objednávky pomocou jobu, raz za hodinu. Odosielajú sa všetky objednávky v stave Prijatá a Spracováva sa, ktoré boli vytvorené za posledných 48h.
+Plugin odosiela objednávky pomocou jobu, raz za hodinu. Odosielajú sa všetky objednávky v stave Prijatá a Spracováva sa, ktoré sú vytvorené za posledných 48h a staršie ako 10 min.
 
 Záložka produkty
 ----------------
@@ -48,7 +48,7 @@ Záložka objednávky
 ------------------
 
 - Záložka slúži na prehľad a hromadný export objednávok do systému.
-- Exportujú sa neexportované objednávky v stave Prijatá a Spracováva sa, staršie ako 2h a novšie ako 48h.
+- Exportujú sa neexportované objednávky v stave Prijatá a Spracováva sa, staršie ako 10 min a novšie ako 48h.
 - Objednávka sa dá alternatívne exportovať v detaile objednávky, kde sa dajú upraviť tiež parametre exportu ak COD a dopravca.
 
 ![](images/order.png)

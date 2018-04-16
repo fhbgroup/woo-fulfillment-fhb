@@ -60,7 +60,7 @@ class OrderRepo
 			'post_status' => ['wc-pending', 'wc-processing'],
 
 			'date_query' => [
-				'before' => '-2 hours',
+				'before' => '-10 minutes',
 				'after' => '-2 days',
 			],
 
