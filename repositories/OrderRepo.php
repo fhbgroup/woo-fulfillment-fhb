@@ -2,7 +2,9 @@
 
 namespace Kika\Repositories;
 
+use Kika\Repositories\ParcelServiceRepo;
 use WC_Order;
+use WC_Order_Item_Shipping;
 use WP_Query;
 
 
@@ -21,8 +23,16 @@ class OrderRepo
 
     private $sf_active = false;
 
-    public function __construct()
+    /** @var array */
+    private $deliveryServices;
+
+    public function __construct(ParcelServiceRepo $parcelServiceRepo)
     {
+        $services = $parcelServiceRepo->fetch();
+        foreach ($services as $service) {
+            $this->deliveryServices[$service->name] = $service->code;
+        }
+
         if(is_plugin_active('woocommerce-superfaktura/wc-superfaktura.php')) {
             $this->sf_active = true;
         }
@@ -156,6 +166,15 @@ class OrderRepo
             $invoiceLink = get_post_meta($order->id, OrderRepo::SF_INVOICE_KEY, true);
         }
 
+        $shippingName = '';
+        foreach ($order->get_items('shipping') as $item) {
+            if($item instanceof WC_Order_Item_Shipping) {
+                $shippingName = $item->get_name();
+                break;
+            }
+        }
+        $deliveryService = isset($this->deliveryServices[$shippingName]) ? $this->deliveryServices[$shippingName] : get_option('kika_service', null);
+
 		$data = [
 			'id' => $order->id,
 			'variableSymbol' => $order->get_order_number(),
@@ -168,7 +187,7 @@ class OrderRepo
 			'phone' => $order->billing_phone ? $order->billing_phone : null,
 			'invoiceLink' => $invoiceLink ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->payment_method) ? $order->get_total() : 0,
-			'parcelService' => get_option('kika_service', null),
+			'parcelService' => $deliveryService,
 		];
 
 		$items = $order->get_items();

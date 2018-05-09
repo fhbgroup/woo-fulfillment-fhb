@@ -77,8 +77,8 @@ $orderApi = new OrderApi($restApi);
 $infoApi = new InfoApi($restApi);
 
 $productRepo = new ProductRepo();
-$orderRepo = new OrderRepo();
 $parcelServiceRepo = new ParcelServiceRepo($infoApi);
+$orderRepo = new OrderRepo($parcelServiceRepo);
 
 new Orders($orderApi, $orderRepo, $parcelServiceRepo);
 new Products($productApi, $productRepo);
