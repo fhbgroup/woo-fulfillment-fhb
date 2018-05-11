@@ -67,7 +67,7 @@ class OrderRepo
 		$args = [
 			'post_type'   => 'shop_order',
 			'posts_per_page' => $limit,
-			'post_status' => ['wc-pending', 'wc-processing'],
+			'post_status' => ['wc-processing'],
 
 			'date_query' => [
 				'before' => '-10 minutes',
@@ -113,7 +113,7 @@ class OrderRepo
 	{
 		$args = [
 			'post_type' => 'shop_order',
-			'post_status' => ['wc-pending', 'wc-processing'],
+			'post_status' => ['wc-processing'],
 		];
 
 		$loop = new WP_Query($args);
@@ -125,7 +125,7 @@ class OrderRepo
 	{
 		$args = [
 			'post_type' => 'shop_order',
-			'post_status' => ['wc-pending', 'wc-processing'],
+			'post_status' => ['wc-processing'],
 
 			'meta_query' => [
 				[

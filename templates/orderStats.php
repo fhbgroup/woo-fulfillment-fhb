@@ -9,4 +9,4 @@
 	</tr>
 </table>
 
-<small>(V stave spracováva sa a prijatá)</small>
+<small>(V stave spracováva sa)</small>
