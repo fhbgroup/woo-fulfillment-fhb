@@ -150,6 +150,23 @@
 			<?php endforeach ?>
 		</table>
 
+        <h2>Faktúry</h2>
+
+		<table class="form-table">
+
+			<tr>
+				<th><label for="invoicePrefix">Prefix faktúry</label></th>
+				<td><input name="invoicePrefix" type="text" id="invoicePrefix" value="<?php echo get_option('kika_invoice_prefix') ?>" class="regular-text" /></td>
+			</tr>
+
+			<tr>
+				<th><label for="invoiceField">Pole s faktúrou</label></th>
+				<td><input name="invoiceField" type="text" id="invoiceField" value="<?php echo get_option('kika_invoice_field') ?>" class="regular-text" /></td>
+			</tr>
+
+		</table>
+
+
 		<p class="submit">
 			<input type="submit" value="Uložiť" class="button-primary" />
 		</p>

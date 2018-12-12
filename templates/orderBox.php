@@ -9,7 +9,7 @@
 	<table class="box-form">
 		<tr>
 			<td><label for="kika-cod">COD:</label></td>
-			<td><input id="kika-cod" type="number" name="kika-cod" value="<?php echo get_option('kika_method_' . $order->payment_method) ? $order->get_total() : '' ?>" /></td>
+			<td><input id="kika-cod" type="number" name="kika-cod" value="<?php echo get_option('kika_method_' . $order->get_payment_method()) ? $order->get_total() : '' ?>" /></td>
 		</tr>
 
 		<tr>

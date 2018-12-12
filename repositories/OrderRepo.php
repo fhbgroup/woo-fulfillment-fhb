@@ -19,9 +19,9 @@ class OrderRepo
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
 	const STATUS_DELETED = 'deleted';
-    const SF_INVOICE_KEY = 'wc_sf_invoice_regular';
 
-    private $sf_active = false;
+    private $invoice_prefix;
+    private $invoice_field;
 
     /** @var array */
     private $deliveryServices;
@@ -32,10 +32,9 @@ class OrderRepo
         foreach ($services as $service) {
             $this->deliveryServices[$service->name] = $service->code;
         }
+        $this->invoice_prefix = get_option('kika_invoice_prefix', null);
+        $this->invoice_field = get_option('kika_invoice_field', null);
 
-        if(is_plugin_active('woocommerce-superfaktura/wc-superfaktura.php')) {
-            $this->sf_active = true;
-        }
     }
 
 
@@ -162,8 +161,11 @@ class OrderRepo
 		$street.= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
 		$street.= $order->shipping_state ? ', ' . $order->shipping_state : '';
 
-        if ($this->sf_active) {
-            $invoiceLink = get_post_meta($order->id, OrderRepo::SF_INVOICE_KEY, true);
+        if ($this->invoice_field) {
+            $invoice = get_post_meta($order->id, $this->invoice_field, true);
+            if ($invoice) {
+                $invoiceLink = $this->invoice_prefix . $invoice;
+            }
         }
 
         $shippingName = '';

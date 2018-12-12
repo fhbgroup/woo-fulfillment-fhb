@@ -25,8 +25,8 @@ class SettingPanel
 	{
 		add_submenu_page('kika-api', 'Nastavenie', 'Nastavenie', 'manage_options', 'kika-api-setting', [$this, 'render']);
 	}
-	
-	
+
+
 	public function render()
 	{
 		$statuses = wc_get_order_statuses();
@@ -69,6 +69,9 @@ class SettingPanel
 			$id = 'kika_method_' . $method->id;
 			update_option($id, sanitize_text_field($_POST[$id]));
 		}
+
+        update_option('kika_invoice_prefix', sanitize_text_field($_POST['invoicePrefix']));
+		update_option('kika_invoice_field', sanitize_text_field($_POST['invoiceField']));
 
 		wp_redirect(admin_url('admin.php?page=kika-api-setting&m=1'));
 		exit;
