@@ -79,16 +79,15 @@ class Orders
 		set_time_limit(0);
 		$export = (int)$_GET['export'];
 
-		if (!wp_verify_nonce( $_GET['nonce'], 'kika-api-verify') or !current_user_can( 'manage_options')) {
-			header('HTTP/1.0 403 Forbidden');
-			exit;
+		if (!wp_verify_nonce( $_GET['nonce'], 'kika-api-verify') or !current_user_can( 'edit_others_posts')) {
+			$this->returnNoPermission();
 		}
 
 		$orders = $this->orderRepo->fetchForExport($export);
 
 		if (!$orders) {
 			header('HTTP/1.0 404 Orders not found.');
-			exit;
+            exit;
 		}
 
 		$logs = $this->exportOrders($orders, $export);
@@ -123,9 +122,8 @@ class Orders
 		$cod = floatval($_GET['cod']);
 		$service = sanitize_text_field($_GET['service']);
 
-		if (!wp_verify_nonce( $_GET['nonce'], 'kika-api-verify') or !current_user_can( 'manage_options')) {
-			header('HTTP/1.0 403 Forbidden');
-			exit;
+		if (!wp_verify_nonce( $_GET['nonce'], 'kika-api-verify') or !current_user_can( 'edit_others_posts')) {
+			$this->returnNoPermission();
 		}
 
 		$order = $this->orderRepo->fetchById($id);
@@ -241,5 +239,16 @@ class Orders
 		require 'templates/orderStats.php';
 		return ob_get_clean();
 	}
+
+    private function returnNoPermission()
+    {
+        $result = [
+            'snippets' => [
+                'logs' => '<span class="log-error">You have no permissions for this task.</span>',
+            ],
+        ];
+		echo json_encode($result);
+		wp_die();
+    }
 
 }
