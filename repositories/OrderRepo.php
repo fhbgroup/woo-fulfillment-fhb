@@ -2,7 +2,6 @@
 
 namespace Kika\Repositories;
 
-use Kika\Repositories\ParcelServiceRepo;
 use WC_Order;
 use WC_Order_Item_Shipping;
 use WP_Query;
@@ -24,14 +23,14 @@ class OrderRepo
     private $invoice_field;
 
     /** @var array */
-    private $deliveryServices;
+    private $deliveryServiceMapping;
 
-    public function __construct(ParcelServiceRepo $parcelServiceRepo)
+
+    public function __construct()
     {
-        $services = $parcelServiceRepo->fetch();
-        foreach ($services as $service) {
-            $this->deliveryServices[$service->name] = $service->code;
-        }
+        $deliveryMapping = get_option('kika_delivery_service_mapping');
+		$this->deliveryServiceMapping = unserialize($deliveryMapping);
+
         $this->invoice_prefix = get_option('kika_invoice_prefix', null);
         $this->invoice_field = get_option('kika_invoice_field', null);
 
@@ -175,9 +174,10 @@ class OrderRepo
                 break;
             }
         }
-        $deliveryService = isset($this->deliveryServices[$shippingName]) ? $this->deliveryServices[$shippingName] : get_option('kika_service', null);
 
-		$data = [
+        $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
+
+        $data = [
 			'id' => $order->id,
 			'variableSymbol' => $order->get_order_number(),
 			'name' => $name,

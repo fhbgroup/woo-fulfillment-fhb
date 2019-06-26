@@ -133,7 +133,24 @@ jQuery(document).ready(function () {
 			}
 		});
 	});
+        
+        
+	jQuery(document).on('click', 'button.kika-delivery-mapping-delete', function(e){
+		e.preventDefault();
+		jQuery(this).parent().parent().remove();
+	});
+
+
+	jQuery(document).on('click', 'button.kika-delivery-mapping-add', function(e){
+		e.preventDefault();
+		var button = jQuery(this);
+		var count = jQuery('.delivery-mapping tr').length;
+		var clone = jQuery('.delivery-mapping tr:last').clone();
+		clone.find('input').attr('name', 'deliveryMapping['+count+']');
+		clone.find('input').attr('id', 'deliveryMapping['+count+']');
+		clone.find('select').attr('name', 'deliveryMappingService['+count+']');
+		jQuery('.delivery-mapping').append(clone);
+	});
 
 
 });
-

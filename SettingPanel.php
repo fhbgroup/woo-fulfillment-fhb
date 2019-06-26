@@ -38,6 +38,13 @@ class SettingPanel
 			$methods['kika_method_' . $method->id] = $method->title;
 		}
 
+		$loadedMapping = get_option('kika_delivery_service_mapping');
+		$loadedMapping = unserialize($loadedMapping);
+
+		foreach ($loadedMapping as $key => $value) {
+			$deliveryMapping[] = [$key, $value];
+		}
+
 		require 'templates/settings.php';
 	}
 
@@ -72,6 +79,13 @@ class SettingPanel
 
         update_option('kika_invoice_prefix', sanitize_text_field($_POST['invoicePrefix']));
 		update_option('kika_invoice_field', sanitize_text_field($_POST['invoiceField']));
+
+        $mappingSave = [];
+		foreach ($_POST['deliveryMapping'] as $key => $value) {
+			$mappingSave[sanitize_text_field($value)] = sanitize_text_field($_POST['deliveryMappingService'][$key]);
+		}
+
+		update_option('kika_delivery_service_mapping', serialize($mappingSave));
 
 		wp_redirect(admin_url('admin.php?page=kika-api-setting&m=1'));
 		exit;
