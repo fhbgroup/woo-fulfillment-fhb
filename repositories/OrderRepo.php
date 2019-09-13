@@ -157,8 +157,13 @@ class OrderRepo
 
 		$name = ($order->shipping_company) ? $order->shipping_company : $order->shipping_first_name . ' ' . $order->shipping_last_name;
 		$street = $order->shipping_address_1;
-		$street.= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
-		$street.= $order->shipping_state ? ', ' . $order->shipping_state : '';
+		$street .= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
+		$street .= $order->shipping_state ? ', ' . $order->shipping_state : '';
+		$zasilkovna_id = get_post_meta( $order->id, 'zasilkovna_id_pobocky', true );
+		if ($zasilkovna_id) {
+			$street .= ' (' . $zasilkovna_id . ')';
+		}
+
 
         if ($this->invoice_field) {
             $invoice = get_post_meta($order->id, $this->invoice_field, true);
@@ -176,6 +181,12 @@ class OrderRepo
         }
 
         $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
+        if ($order->shipping_state) { //get state name instead of code
+        	$state = WC()->countries->get_states($order->shipping_country)[$order->shipping_state];
+        	$city = $order->shipping_city . ' (' . $state . ')';
+        } else {
+        	$city = $order->shipping_city;
+        }
 
         $data = [
 			'id' => $order->id,
@@ -184,7 +195,7 @@ class OrderRepo
 			'email' => $order->billing_email,
 			'street' => $street,
 			'country' => mb_strtolower($order->shipping_country),
-			'city' => $order->shipping_city,
+			'city' => $city,
 			'psc' => $order->shipping_postcode,
 			'phone' => $order->billing_phone ? $order->billing_phone : null,
 			'invoiceLink' => $invoiceLink ? $invoiceLink : '',
