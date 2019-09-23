@@ -159,14 +159,9 @@ class OrderRepo
 		$street = $order->shipping_address_1;
 		$street .= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
 		$street .= $order->shipping_state ? ', ' . $order->shipping_state : '';
-		$zasilkovna_id = get_post_meta( $order->id, 'zasilkovna_id_pobocky', true );
-		if ($zasilkovna_id) {
-			$street .= ' (' . $zasilkovna_id . ')';
-		}
-
 
         if ($this->invoice_field) {
-            $invoice = get_post_meta($order->id, $this->invoice_field, true);
+            $invoice = get_post_meta($order->get_id(), $this->invoice_field, true);
             if ($invoice) {
                 $invoiceLink = $this->invoice_prefix . $invoice;
             }
@@ -176,6 +171,10 @@ class OrderRepo
         foreach ($order->get_items('shipping') as $item) {
             if($item instanceof WC_Order_Item_Shipping) {
                 $shippingName = $item->get_name();
+				$zasilkovna_id = $item->get_meta('zasilkovna-pickup-point-id');
+				if ($zasilkovna_id) {
+					$street .= ' (' . $zasilkovna_id . ')';
+				}
                 break;
             }
         }
