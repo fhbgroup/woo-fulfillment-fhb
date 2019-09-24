@@ -182,9 +182,12 @@ class OrderRepo
         $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
         if ($order->shipping_state) { //get state name instead of code
         	$state = WC()->countries->get_states($order->shipping_country)[$order->shipping_state];
-        	$city = $order->shipping_city . ' (' . $state . ')';
+        	$state = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
+        	$city = $order->shipping_city . ' / ' . $state;
+        	$postcode = $order->shipping_postcode ? $order->shipping_postcode : '00000';
         } else {
         	$city = $order->shipping_city;
+        	$postcode = $order->shipping_postcode;
         }
 
         $data = [
@@ -195,7 +198,7 @@ class OrderRepo
 			'street' => $street,
 			'country' => mb_strtolower($order->shipping_country),
 			'city' => $city,
-			'psc' => $order->shipping_postcode,
+			'psc' => $postcode,
 			'phone' => $order->billing_phone ? $order->billing_phone : null,
 			'invoiceLink' => $invoiceLink ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->payment_method) ? $order->get_total() : 0,
