@@ -168,16 +168,20 @@ class OrderRepo
         }
 
         $shippingName = '';
+        $zasilkovna_id = get_post_meta($order->get_id(), 'zasilkovna_id_pobocky', true);
         foreach ($order->get_items('shipping') as $item) {
             if($item instanceof WC_Order_Item_Shipping) {
                 $shippingName = $item->get_name();
-				$zasilkovna_id = $item->get_meta('zasilkovna-pickup-point-id');
-				if ($zasilkovna_id) {
-					$street .= ' (' . $zasilkovna_id . ')';
-				}
+                if (!$zasilkovna_id) {
+                	$zasilkovna_id = $item->get_meta('zasilkovna-pickup-point-id');
+                }
+				
                 break;
             }
         }
+		if ($zasilkovna_id) {
+			$street .= ' (' . $zasilkovna_id . ')';
+		}
 
         $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
         if ($order->shipping_state) { //get state name instead of code
