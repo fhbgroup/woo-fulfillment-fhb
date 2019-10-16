@@ -155,7 +155,9 @@ class OrderRepo
 	public function prepareData(WC_Order $order)
 	{
 
-		$name = ($order->shipping_company) ? $order->shipping_company : $order->shipping_first_name . ' ' . $order->shipping_last_name;
+		$name = $order->shipping_first_name . ' ' . $order->shipping_last_name;
+		$name = ($order->shipping_company) ? $order->shipping_company ' - ' . $name : $name;
+
 		$street = $order->shipping_address_1;
 		$street .= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
 		$street .= $order->shipping_state ? ', ' . $order->shipping_state : '';
