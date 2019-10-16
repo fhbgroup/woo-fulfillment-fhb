@@ -156,7 +156,7 @@ class OrderRepo
 	{
 
 		$name = $order->shipping_first_name . ' ' . $order->shipping_last_name;
-		$name = ($order->shipping_company) ? $order->shipping_company ' - ' . $name : $name;
+		$name = ($order->shipping_company) ? $order->shipping_company . ' - ' . $name : $name;
 
 		$street = $order->shipping_address_1;
 		$street .= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
