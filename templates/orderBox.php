@@ -4,7 +4,7 @@
 
 	Exportovaná apiId: <span class="text-danger"><?php echo $post_id ?></span>
 
-<?php else: ?>
+<?php elseif($order): ?>
 
 	<table class="box-form">
 		<tr>
