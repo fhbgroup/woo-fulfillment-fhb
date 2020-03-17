@@ -196,7 +196,6 @@ class Orders
 		$prefix = get_option('kika_prefix');
 
 		foreach ($orders as $order) {
-
 			$id = $order['id'];
 			$exportId = $prefix ? "$prefix-$id" : $id;
 			$order['id'] = $exportId;
@@ -212,6 +211,12 @@ class Orders
 				'delivered' =>  "$url&type=delivered",
 				'returned' =>  "$url&type=returned",
 			];
+
+			if (empty($order['_embedded']['items'])) {
+                update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+                $logs[] = '<span class="log-error">Order has no products, order skipped.</span>';
+			    continue;
+            }
 
 			try {
 				$this->orderApi->create($order);

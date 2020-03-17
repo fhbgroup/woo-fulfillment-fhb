@@ -18,6 +18,7 @@ class OrderRepo
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
 	const STATUS_DELETED = 'deleted';
+	const STATUS_SKIPPED = 'skipped';
 
     private $invoice_prefix;
     private $invoice_field;
@@ -83,8 +84,8 @@ class OrderRepo
 					],
 					[
 						'key' => self::STATUS_KEY,
-						'compare' => '!=',
-						'value' => self::STATUS_SYNCED,
+						'compare' => 'NOT IN',
+						'value' => [self::STATUS_SYNCED, self::STATUS_SKIPPED],
 					],
 				],
 
@@ -214,6 +215,9 @@ class OrderRepo
 		$items = $order->get_items();
 		foreach ($items as $item_id => $item) {
 			$product = $order->get_product_from_item($item);
+            if(strtolower(substr( $product->get_sku(), 0, 6 )) === "ignore"){
+                continue;
+            }
 			$data['_embedded']['items'][] = [
 				'id' => $product ? $product->get_sku() : null,
 				'qty' => $item['qty'],
