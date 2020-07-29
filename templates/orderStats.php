@@ -2,11 +2,11 @@
 
 <table class="form-table">
 	<tr>
-		<th>Objednávky</th>
+		<th><?php _e('Orders', 'woocommerce-fhb-api'); ?></th>
 		<td>
 			<span class="text-success"><?php echo $countSynced ?></span> / <span class="text-danger"><?php echo $countError ?></span> / <?php echo $count ?>
 		</td>
 	</tr>
 </table>
 
-<small>(V stave spracováva sa)</small>
+<small>(<?php _e('Only orders with status processing are exported', 'woocommerce-fhb-api'); ?>)</small>

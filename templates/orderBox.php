@@ -2,7 +2,7 @@
 
 <?php if($exported): ?>
 
-	Exportovaná apiId: <span class="text-danger"><?php echo $post_id ?></span>
+	<?php _e('Exported with', 'woocommerce-fhb-api'); ?> apiId: <span class="text-danger"><?php echo $post_id ?></span>
 
 <?php elseif($order): ?>
 
@@ -13,7 +13,7 @@
 		</tr>
 
 		<tr>
-			<td><label for="kika-service">Dopravca:</label></td>
+			<td><label for="kika-service"><?php _e('Carrier', 'woocommerce-fhb-api'); ?>:</label></td>
 			<td>
 				<select id="kika-service" name="kika-service">
 					<option value=""></option>
@@ -27,7 +27,7 @@
 		</tr>
 	</table>
 
-	<button type="button" data-url="<?php echo admin_url("admin-ajax.php?action=fhb_kika_export_order&order=$post_id&nonce=$nonce") ?>" class="button kika-order-ajax" data-progress-text="Exportujem..." data-spinner="#product-spinner">
+	<button type="button" data-url="<?php echo admin_url("admin-ajax.php?action=fhb_kika_export_order&order=$post_id&nonce=$nonce") ?>" class="button kika-order-ajax" data-progress-text="<?php _e('Exporting', 'woocommerce-fhb-api'); ?>..." data-spinner="#product-spinner">
 		Export...
 	</button>
 

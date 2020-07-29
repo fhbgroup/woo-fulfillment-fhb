@@ -1,6 +1,6 @@
 <?php if (!defined( 'KIKA_PLUGIN_URL')) exit; ?>
 
-<button type="button" data-url="<?php echo admin_url("admin-ajax.php?action=fhb_kika_export_product&product=$post_id&nonce=$nonce") ?>" class="button kika-ajax" data-progress-text="Exportujem..." data-spinner="#product-spinner">
+<button type="button" data-url="<?php echo admin_url("admin-ajax.php?action=fhb_kika_export_product&product=$post_id&nonce=$nonce") ?>" class="button kika-ajax" data-progress-text="<?php _e('Exporting', 'woocommerce-fhb-api'); ?>..." data-spinner="#product-spinner">
 	Export...
 </button>
 

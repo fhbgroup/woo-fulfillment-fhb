@@ -1,9 +1,9 @@
 <?php if (!defined( 'KIKA_PLUGIN_URL')) exit; ?>
 
 <div class="wrap">
-	<h2>Objednávky</h2>
+	<h2><?php _e('Orders', 'woocommerce-fhb-api'); ?></h2>
 
-	<h2>Exportované / Chybné / Všetko</h2>
+	<h2><?php _e('Exported / Error / All', 'woocommerce-fhb-api'); ?></h2>
 
 	<div id="snippet-stats">
 
@@ -13,7 +13,7 @@
 
 	<br>
 
-	<button data-url="<?php echo admin_url("admin-ajax.php?action=fhb_kika_export_orders&export=$export&nonce=$nonce") ?>" class="button kika-repeat-ajax fhb_kika_button" data-stop-text="Zastaviť..." data-end-text="Zastavujem..." data-spinner="#orders-spinner">
+	<button data-url="<?php echo admin_url("admin-ajax.php?action=fhb_kika_export_orders&export=$export&nonce=$nonce") ?>" class="button kika-repeat-ajax fhb_kika_button" data-stop-text="<?php _e('Stop', 'woocommerce-fhb-api'); ?>..." data-end-text="<?php _e('Stopping', 'woocommerce-fhb-api'); ?>..." data-spinner="#orders-spinner">
 		Export...
 	</button>
 

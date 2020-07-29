@@ -23,7 +23,7 @@ class SettingPanel
 
 	public function addMenuItem()
 	{
-		add_submenu_page('kika-api', 'Nastavenie', 'Nastavenie', 'manage_options', 'kika-api-setting', [$this, 'render']);
+		add_submenu_page('kika-api', __('Settings', 'woocommerce-fhb-api'), __('Settings', 'woocommerce-fhb-api'), 'manage_options', 'kika-api-setting', [$this, 'render']);
 	}
 
 
@@ -60,7 +60,6 @@ class SettingPanel
 
 		update_option('kika_appid', sanitize_text_field($_POST['appid']));
 		update_option('kika_secret', sanitize_text_field($_POST['secret']));
-		update_option('kika_order_send', sanitize_text_field($_POST['order_send']));
 
 		update_option('kika_notify_confirmed', sanitize_text_field($_POST['confirmed']));
 		update_option('kika_notify_sent', sanitize_text_field($_POST['sent']));

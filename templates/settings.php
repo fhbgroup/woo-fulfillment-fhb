@@ -1,14 +1,14 @@
 ﻿<?php if (!defined( 'KIKA_PLUGIN_URL')) exit; ?>
 
 <div class="wrap">
-	<h2>Nastavenie</h2>
+	<h2><?php _e('Settings','woocommerce-fhb-api'); ?></h2>
 
 	<form method="post" action="<?php echo admin_url('admin-post.php') ?>">
 		<input type="hidden" name="action" value="kika_setting_save" />
 
-		<h2>Autorizácia</h2>
+		<h2><?php _e('Connection','woocommerce-fhb-api'); ?></h2>
 
-		<p>Prístupové údaje si môžete vygenerovať <a href="https://system.fhb.sk/zoe/api/">tu</a>.</p>
+		<p><?php _e('You can generate login credentials ','woocommerce-fhb-api'); ?> <a href="https://system.fhb.sk/zoe/api/"><?php _e('here','woocommerce-fhb-api'); ?></a>.</p>
 
 		<?php wp_nonce_field('kika-api-verify'); ?>
 
@@ -24,21 +24,21 @@
 			</tr>
 
 			<tr>
-				<th><label for="sandbox">Sandbox mod</label></th>
+				<th><label for="sandbox">Sandbox mode</label></th>
 				<td>
 					<label>
 						<input name="sandbox" type="checkbox" value="1" <?php echo get_option('kika_sandbox') ? 'checked' : '' ?> />
-						Použiť testovací server
+						<?php _e('Use test server','woocommerce-fhb-api'); ?>
 					</label>
 				</td>
 			</tr>
 		</table>
 
-		<h2>Objednávky</h2>
+		<h2><?php _e('Orders','woocommerce-fhb-api'); ?></h2>
 
 		<table class="form-table">
 			<tr>
-				<th><label for="service">Default prepravca</label></th>
+				<th><label for="service"><?php _e('Default carrier','woocommerce-fhb-api'); ?></label></th>
 				<td>
 					<select name="service">
 						<option value=""></option>
@@ -52,18 +52,18 @@
 			</tr>
 
 			<tr>
-				<th><label for="secret">Prefix API Id</label></th>
+				<th><label for="secret">API Id prefix</label></th>
 				<td><input name="prefix" type="text" id="secret" value="<?php echo get_option('kika_prefix') ?>" class="regular-text" maxlength="4" /></td>
 			</tr>
 
 		</table>
 
-		<h2>Mapovanie statusov</h2>
+		<h2><?php _e('Mapping of statuses','woocommerce-fhb-api'); ?></h2>
 
 		<table class="form-table">
 
 			<tr>
-				<th><label for="confirmed">Notifikácia confirmed</label></th>
+				<th><label for="confirmed"><?php _e('Notification confirmed','woocommerce-fhb-api'); ?></label></th>
 				<td>
 					<select name="confirmed">
 						<option value=""></option>
@@ -77,7 +77,7 @@
 			</tr>
 
 			<tr>
-				<th><label for="sent">Notifikácia sent</label></th>
+				<th><label for="sent"><?php _e('Notification sent','woocommerce-fhb-api'); ?></label></th>
 				<td>
 					<select name="sent">
 						<option value=""></option>
@@ -91,7 +91,7 @@
 			</tr>
 
 			<tr>
-				<th><label for="delivered">Notifikácia delivered</label></th>
+				<th><label for="delivered"><?php _e('Notification delivered','woocommerce-fhb-api'); ?></label></th>
 				<td>
 					<select name="delivered" id="">
 						<option value=""></option>
@@ -105,7 +105,7 @@
 			</tr>
 
 			<tr>
-				<th><label for="confirmed">Notifikácia returned</label></th>
+				<th><label for="confirmed"><?php _e('Notification returned','woocommerce-fhb-api'); ?></label></th>
 				<td>
 					<select name="returned" id="">
 						<option value=""></option>
@@ -119,7 +119,7 @@
 			</tr>
 
 			<tr>
-				<th><label for="confirmed">Zrušenie objednávky</label></th>
+				<th><label for="confirmed"><?php _e('Order cancellation on stauses','woocommerce-fhb-api'); ?></label></th>
 				<td>
 					<select name="delete[]" id="" multiple size="<?php echo count($statuses) ?>">
 						<?php foreach($statuses as $key => $value): ?>
@@ -133,7 +133,7 @@
 
 		</table>
 
-		<h2>Platobné metódy</h2>
+		<h2><?php _e('Payment methods','woocommerce-fhb-api'); ?></h2>
 
 		<table class="form-table">
 
@@ -143,36 +143,36 @@
 				<td>
 					<label>
 						<input name="<?php echo $key ?>" type="checkbox" value="1" <?php echo get_option($key) ? 'checked' : '' ?> />
-						Posielať cenu do api
+						<?php _e('Send amount','woocommerce-fhb-api'); ?>
 					</label>
 				</td>
 			</tr>
 			<?php endforeach ?>
 		</table>
 
-        <h2>Faktúry</h2>
+        <h2><?php _e('Invoices','woocommerce-fhb-api'); ?></h2>
 
 		<table class="form-table">
 
 			<tr>
-				<th><label for="invoicePrefix">Prefix faktúry</label></th>
+				<th><label for="invoicePrefix"><?php _e('Invoice prefix','woocommerce-fhb-api'); ?></label></th>
 				<td><input name="invoicePrefix" type="text" id="invoicePrefix" value="<?php echo get_option('kika_invoice_prefix') ?>" class="regular-text" /></td>
 			</tr>
 
 			<tr>
-				<th><label for="invoiceField">Pole s faktúrou</label></th>
+				<th><label for="invoiceField"><?php _e('Invoice field','woocommerce-fhb-api'); ?></label></th>
 				<td><input name="invoiceField" type="text" id="invoiceField" value="<?php echo get_option('kika_invoice_field') ?>" class="regular-text" /></td>
 			</tr>
 
 		</table>
 
 
-        <h2>Mapovanie prepravcov</h2>
+        <h2><?php _e('Mapping of carriers','woocommerce-fhb-api'); ?></h2>
 
 			<table class="form-table delivery-mapping" style="max-width: 400px;">
 				<tr>
-					<th>Woocommerce prepravca</th>
-					<th>Fullfilment prepravca</th>
+					<th><?php _e('Woocommerce carrier','woocommerce-fhb-api'); ?></th>
+					<th><?php _e('Fullfilment carrier','woocommerce-fhb-api'); ?></th>
 					<th></th>
 				</tr>
 				<?php if (isset($deliveryMapping)): ?>
@@ -216,11 +216,11 @@
 				<?php endif; ?>
 			</table>
 			<br>
-			<button class="button kika-delivery-mapping-add fhb_kika_button">Pridať riadok</button>
+			<button class="button kika-delivery-mapping-add fhb_kika_button"><?php _e('Add new line','woocommerce-fhb-api'); ?></button>
 
 
 		<p class="submit">
-			<input type="submit" value="Uložiť" class="button-primary" />
+			<input type="submit" value="<?php _e('Save','woocommerce-fhb-api'); ?>" class="button-primary" />
 		</p>
 
 	</form>

@@ -1,0 +1,170 @@
+# Blank WordPress Pot
+# Copyright 2014 ...
+# This file is distributed under the GNU General Public License v3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Blank WordPress Pot v1.0.0\n"
+"Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
+"POT-Creation-Date: 2020-07-29 13:50+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Your Team <translations@example.com>\n"
+"Language: sk_SK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : "
+"2);\n"
+"X-Textdomain-Support: yesX-Generator: Poedit 1.6.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;"
+"_nx_noop:4c,1,2;_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;"
+"__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Generator: Poedit 2.4\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: templates\n"
+"X-Poedit-SearchPath-2: Orders.php\n"
+"X-Poedit-SearchPath-3: Products.php\n"
+"X-Poedit-SearchPath-4: SettingPanel.php\n"
+
+#: Orders.php:47 templates/orderStats.php:5 templates/orders.php:4
+#: templates/settings.php:37
+msgid "Orders"
+msgstr "Objednávky"
+
+#: Products.php:33 templates/products.php:4
+msgid "Products"
+msgstr "Produkty"
+
+#: SettingPanel.php:26 templates/settings.php:4
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: templates/orderBox.php:5
+msgid "Exported with"
+msgstr "Exportované s"
+
+#: templates/orderBox.php:16
+msgid "Carrier"
+msgstr "Prepravca"
+
+#: templates/orderBox.php:30 templates/productBox.php:3
+msgid "Exporting"
+msgstr "Exportujem"
+
+#: templates/orderStats.php:12
+msgid "Only orders with status processing are exported"
+msgstr "Exportujú sa iba objednávky v stave spracováva sa"
+
+#: templates/orders.php:6 templates/products.php:6
+msgid "Exported / Error / All"
+msgstr "Exportované / Chybné / Všetko"
+
+#: templates/orders.php:16 templates/products.php:16
+msgid "Stop"
+msgstr "Zastaviť"
+
+#: templates/orders.php:16 templates/products.php:16
+msgid "Stopping"
+msgstr "Zastavujem"
+
+#: templates/productStats.php:5
+msgid "Simple products"
+msgstr "Jednoduché produkty"
+
+#: templates/productStats.php:12
+msgid "Variable products"
+msgstr "Zložené produkty"
+
+#: templates/settings.php:9
+msgid "Connection"
+msgstr "Napojenie"
+
+#: templates/settings.php:11
+msgid "You can generate login credentials "
+msgstr "Prístupové údaje si môžete vygenerovať "
+
+#: templates/settings.php:11
+msgid "here"
+msgstr "tu"
+
+#: templates/settings.php:31
+msgid "Use test server"
+msgstr "Použiť testovací server"
+
+#: templates/settings.php:41
+msgid "Default carrier"
+msgstr "Predvolený prepravca"
+
+#: templates/settings.php:61
+msgid "Mapping of statuses"
+msgstr "Mapovanie statusov"
+
+#: templates/settings.php:66
+msgid "Notification confirmed"
+msgstr "Notifikácia confirmed"
+
+#: templates/settings.php:80
+msgid "Notification sent"
+msgstr "Notifikácia sent"
+
+#: templates/settings.php:94
+msgid "Notification delivered"
+msgstr "Notifikácia delivered"
+
+#: templates/settings.php:108
+msgid "Notification returned"
+msgstr "Notifikácia returned"
+
+#: templates/settings.php:122
+msgid "Order cancellation on stauses"
+msgstr "Zrušenie objednávky pri statusoch"
+
+#: templates/settings.php:136
+msgid "Payment methods"
+msgstr "Platobné metódy"
+
+#: templates/settings.php:146
+msgid "Send amount"
+msgstr "Poslať čiastku do API"
+
+#: templates/settings.php:153
+msgid "Invoices"
+msgstr "Faktúra"
+
+#: templates/settings.php:158
+msgid "Invoice prefix"
+msgstr "Prefix faktúry"
+
+#: templates/settings.php:163
+msgid "Invoice field"
+msgstr "Pole s faktúrou"
+
+#: templates/settings.php:170
+msgid "Mapping of carriers"
+msgstr "Mapovanie prepravcov"
+
+#: templates/settings.php:174
+msgid "Woocommerce carrier"
+msgstr "Woocommerce prepravca"
+
+#: templates/settings.php:175
+msgid "Fullfilment carrier"
+msgstr "Fullfilment prepravca"
+
+#: templates/settings.php:219
+msgid "Add new line"
+msgstr "Pridať nový riadok"
+
+#: templates/settings.php:223
+msgid "Save"
+msgstr "Uložiť"
+
+#~ msgid "with processing status"
+#~ msgstr "v stave spracováva sa"
+
+#, php-format
+#~ msgid "%1$s / %2$s / %3$s"
+#~ msgstr "%1$s / %2$s / %3$s"

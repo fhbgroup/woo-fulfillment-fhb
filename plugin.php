@@ -9,6 +9,8 @@
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
  * Version: 2.22
+ * Text Domain: woocommerce-fhb-api
+ * Domain Path: /languages
  */
 
 // If this file is called directly, abort.
@@ -98,3 +100,9 @@ add_filter( 'manage_edit-shop_order_columns', function($columns) {
 add_action('manage_shop_order_posts_custom_column', function($column, $post_id) {
 	echo get_post_meta($post_id, $column, true);
 }, 10, 2);
+
+
+add_action( 'plugins_loaded', function() {
+		load_plugin_textdomain( 'woocommerce-fhb-api', FALSE, basename( dirname( 	__FILE__ ) ) . '/languages/' );
+	} 
+);

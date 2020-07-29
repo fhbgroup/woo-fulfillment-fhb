@@ -44,7 +44,7 @@ class Orders
 	public function addMenuItems()
 	{
 		add_menu_page('FHB Kika API', 'FHB Kika API', 'manage_options', 'kika-api', [$this, 'render'], 'dashicons-migrate');
-		add_submenu_page('kika-api', 'Objednávky', 'Objednávky', 'manage_options', 'kika-api', [$this, 'render']);
+		add_submenu_page('kika-api', __('Orders', 'woocommerce-fhb-api'), __('Orders', 'woocommerce-fhb-api'), 'manage_options', 'kika-api', [$this, 'render']);
 	}
 
 

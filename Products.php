@@ -30,7 +30,7 @@ class Products
 
 	public function addMenuItems()
 	{
-		add_submenu_page('kika-api', 'Produkty', 'Produkty', 'manage_options', 'kika-api-products', [$this, 'render']);
+		add_submenu_page('kika-api', __('Products', 'woocommerce-fhb-api'), __('Products', 'woocommerce-fhb-api'), 'manage_options', 'kika-api-products', [$this, 'render']);
 	}
 
 
