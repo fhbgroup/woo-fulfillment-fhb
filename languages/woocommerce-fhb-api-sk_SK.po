@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Blank WordPress Pot v1.0.0\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2020-07-29 13:50+0200\n"
+"POT-Creation-Date: 2020-07-29 15:45+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Your Team <translations@example.com>\n"
@@ -34,9 +34,17 @@ msgstr ""
 msgid "Orders"
 msgstr "Objednávky"
 
+#: Orders.php:134
+msgid "Order exported"
+msgstr "Objednávka exportovaná"
+
 #: Products.php:33 templates/products.php:4
 msgid "Products"
 msgstr "Produkty"
+
+#: Products.php:111
+msgid "Product exported"
+msgstr "Produkt exportovaný"
 
 #: SettingPanel.php:26 templates/settings.php:4
 msgid "Settings"

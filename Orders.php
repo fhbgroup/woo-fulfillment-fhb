@@ -119,8 +119,6 @@ class Orders
 	public function exportSingle()
 	{
 		$id = (int)$_GET['order'];
-		$cod = floatval($_GET['cod']);
-		$service = sanitize_text_field($_GET['service']);
 
 		if (!wp_verify_nonce( $_GET['nonce'], 'kika-api-verify') or !current_user_can( 'edit_others_posts')) {
 			$this->returnNoPermission();
@@ -129,9 +127,16 @@ class Orders
 		$order = $this->orderRepo->fetchById($id);
 		$logs = $this->exportOrders([$order], time(), true);
 
+		if(!empty($_GET['cod'])) {
+			$order['cod'] = floatval($_GET['cod']);
+		}
+		if(!empty($_GET['service'])) {
+			$order['parcelService'] = sanitize_text_field($_GET['service']);
+		}
+
 		$result = [
 			'snippets' => [
-				'logs' => $logs ? join('<br>', $logs) . '<br>' : '<span class="log-error">Objednávka exportovaná</span>',
+				'logs' => $logs ? join('<br>', $logs) . '<br>' : '<span class="log-error">' . __('Order exported', 'woocommerce-fhb-api') . '</span>',
 			],
 		];
 

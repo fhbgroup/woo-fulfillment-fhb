@@ -108,7 +108,7 @@ class Products
 
 		$result = [
 			'snippets' => [
-				'logs' => $logs ? join('<br>', $logs) . '<br>' : '<span class="log-error">Produkt exportovaný</span>',
+				'logs' => $logs ? join('<br>', $logs) . '<br>' : '<span class="log-error">' . __('Product exported', 'woocommerce-fhb-api') . '</span>',
 			],
 		];
 
