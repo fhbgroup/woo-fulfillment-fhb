@@ -125,14 +125,14 @@ class Orders
 		}
 
 		$order = $this->orderRepo->fetchById($id);
-		$logs = $this->exportOrders([$order], time(), true);
-
 		if(!empty($_GET['cod'])) {
 			$order['cod'] = floatval($_GET['cod']);
 		}
 		if(!empty($_GET['service'])) {
 			$order['parcelService'] = sanitize_text_field($_GET['service']);
 		}
+
+		$logs = $this->exportOrders([$order], time(), true);
 
 		$result = [
 			'snippets' => [
