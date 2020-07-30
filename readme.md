@@ -4,8 +4,8 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 Čítaj tiež po [Slovensky](readme.sk.md)
 
 ## Contents
-  - [Instalation](#inštalácia)
-  - [Settings](#nastavenie)
+  - [Instalation](#instalation)
+  - [Settings](#settings)
   	- [Connection](#connection)
   	- [Orders](#orders)
   	- [Mapping of statuses](#mapping-of-statuses)
@@ -65,7 +65,7 @@ For proper integration, products must be exported before sending actual orders!
 
 #### Exporting of products
 
-![](images/product.en.png)
+![](images/products.en.png)
 
 - tab is used for an overview and bulk export of product to the ZOE system
 - it is possible to export product individually in product detail
@@ -78,4 +78,4 @@ For proper integration, products must be exported before sending actual orders!
 - only unexported orders, in processing status, older than 10 minutes and newer than 2 days are exported
 - order can be also exported individually in order detail, cod amount and carrier can be specifically set
 
-![](images/order.en.png)
+![](images/orders.en.png)
