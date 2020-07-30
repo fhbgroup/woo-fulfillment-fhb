@@ -1,10 +1,17 @@
 # Fullfilment by FHB - woocommerce plugin
 Plugin slúžiaci na prepojenie s woocommerce s fullfilment systémom ZOE
 
+Read this in [English](README.md)
+
 ## Obsah
   - [Inštalácia](#inštalácia)
   - [Nastavenie](#nastavenie)
-    - [Všeobecné](#všeobecné)
+  	- [Autorizácia](#autorizacia)
+  	- [Mapovanie statusov](#mapovanie-statusov)
+  	- [Platobné metódy](#platobné-metódy)
+  	- [Faktúry](#faktúry)
+  	- [Mapovanie prepravcov](#mapovanie-prepravcov)
+  - [Exportovanie](#exportovanie)
     - [Produkty](#produkty)
     - [Objednávky](#objednávky)
 
@@ -15,37 +22,59 @@ Plugin slúžiaci na prepojenie s woocommerce s fullfilment systémom ZOE
 
 ![](images/plugin.png)
 
-- v menu sa vytvori nova položka FHB Kika API
+- po aktivácii sa v menu objaví nová položka FHB Kika API
 
 ![](images/menu.png)
 
 ### Nastavenie
+ - nasledovná sekcia obsahuje popis nastavení pluginu pre správnu funkčnosť
 
 ![](images/setting.png)
 ![](images/setting2.png)
 ![](images/setting3.png)
 
-- API AppId a Secret podla zoe
-- Sandbox mod - slúži na testovanie. Ak je zapnutý, posiela plugin požiadavky na dev server.
-- Default prepravca - vyber štandardného prepravcu. Zoznam sa aktualizuje raz za 7 dní.
-- Prefix API ID - pridá prefix k API ID. V prípade ak ma užívateľ viac obchodov aby neprišlo ku kolízii čísiel. 
-- Mapovanie statusov - tu sa dajú namapovať Kika API notify linky na Woocomerce statusy. Napr: 
-   - Notifikácia confirmed na Spracováva sa
-   - Notifikácia sent na Vybavená
-   - Notifikácia returned na Zrušenia
-- Zrušenie objednávky - nastavenie statusov pri ktorých sa objednávka vymaže zo Zoe. Je možné len v prípade, že je v Zoe v stave Pending.
-- Platobné metódy - nastavenie pri ktorej metóde sa posiela suma do API. Defaultne je zapnutá Dobierka
-- Faktúry - nastavenie umiestnenia faktúry. Ak nejaký plugin generuje faktúru, a ukladá jej url do parametra objednávky, stačí vyplniť "Pole s faktúrou". Ak sa do tohto poľa ukladá iba názov súboru, tak treba nastaviť aj prefix tohto súboru - vyskladá sa URL faktúry ktorá sa pošle s objednávkou.
-- Mapovanie prepravcov - nastavenie mapovania prepravcu vo Woocommerce na prepravcu v fullfilment systéme Kika
+#### Autorizácia
+- API AppId + API Secret - hodnoty vygenerované v systéme ZOE, určené na spárovanie so zákazníckym účtom
+- Sandbox Mode - checkbox, indikuje či je plugin napojený na produkčný alebo testovací účet 
+
+#### Objednávky
+- default prepravca - nepovinné, default prepravca ktorý sa prideľuje objednávke
+- Prefix API Id - prefix k ID objednávky, nutné vyplniť rôznymi hodnotamiu ak sa používa vo viacerých eshopoch
+
+#### Mapovanie statusov
+Slúži na zmenu statusu objednávky keď sa zmení stav objednávky vo fullfilment centre.
+
+- Notifkácia confirmed - nastaví status keď sa objednávka začne spracovávať
+- Notifkácia sent - nastaví status keď bude zásielka odoslaná (obyčajne nastavené na Vybavená)
+- Notifkácia returned - nastaví status keď bude objednávka vrátená
+
+- Zrušenie objednávky - u vybraných statusov, slúži na dodatočné vymazanie objednávky. Ak objednávka nadobudne vybrané statusy, plugin sa pokúsi objednávku vymazať zo systému ZOE. Zrušenie objednávky bude úspešné iba ak sa objednávka nezačala spracovávať.
+
+#### Platobné metódy
+Nastavenie COD platieb. Pri označených platobných metódach bude plugin posielať plugin dobierkovú sumu do systému ZOE.
+
+#### Faktúry
+V prípade že k objednávkam treba tlačiť a prikladať faktúru, je možné použiť toto nastavenie. Slúži na posielanie URL faktúry do systému ZOE.
+Pugin z nasledujúcich dvoch polí vytvorí URL faktúry, pod ktorým je prístupný súbor s faktúrou.
+- Prefix faktúry - ak je v "Pole s faktúrou" názov súboru, tu treba zadať cestu / zložku, v ktorej je súbor uložený
+- Pole s faktúrou - pole objednávky, v ktorom sa chachádza URL na faktúru, resp. názov súboru s faktúrou
+
+#### Mapovanie prepravcov
+Slúži na mapovanie Woocommerce prepravcov na prepravcov v systéme ZOE.
+
 
 Plugin odosiela objednávky pomocou jobu, raz za hodinu. Odosielajú sa všetky objednávky v stave Spracováva sa, ktoré sú vytvorené za posledných 48h a staršie ako 10 min.
+
+### Exportovanie
+Popis exportu produktov a objednávok.
+Na správne nastavenie integrácie treba po nainštalovaní pluginu exportovať produkty do systému ZOE.
 
 #### Produkty
 
 ![](images/product.png)
 
-- Záložka slúži na prehľad a hromadný export produktov do systému.
-- Produkt sa dá alternatívne exportovať v detaile produktu.
+- Záložka slúži na prehľad a hromadný export produktov do systému ZOE
+- Produkt sa dá alternatívne exportovať v detaile produktu
 - Každý jednoduchý produkt musí mať pred exportom nastavene unikátne SKU. Nastavuje sa v Detail produktu/Údaje o produkte/Sklad/Katalógové číslo
 
 ![](images/simple.png)
@@ -57,7 +86,7 @@ Plugin odosiela objednávky pomocou jobu, raz za hodinu. Odosielajú sa všetky 
 #### Objednávky
 
 - Záložka slúži na prehľad a hromadný export objednávok do systému.
-- Exportujú sa neexportované objednávky v stave Spracováva sa, staršie ako 10 min a novšie ako 48h.
-- Objednávka sa dá alternatívne exportovať v detaile objednávky, kde sa dajú upraviť tiež parametre exportu ak COD a dopravca.
+- Exportujú sa neexportované objednávky v stave Spracováva sa, staršie ako 10 min a novšie ako 48h
+- Objednávka sa dá alternatívne exportovať v detaile objednávky, kde sa dajú upraviť parametre exportu ako COD a prepravca
 
 ![](images/order.png)
