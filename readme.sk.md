@@ -1,19 +1,20 @@
 # Fullfilment by FHB - woocommerce plugin
 Plugin slúžiaci na prepojenie s woocommerce s fullfilment systémom ZOE
 
-Read this in [English](README.md)
+Read this in [English](readme.md)
 
 ## Obsah
   - [Inštalácia](#inštalácia)
   - [Nastavenie](#nastavenie)
-  	- [Autorizácia](#autorizacia)
+  	- [Autorizácia](#autorizácia)
+  	- [Objednávky](#objednávky)
   	- [Mapovanie statusov](#mapovanie-statusov)
   	- [Platobné metódy](#platobné-metódy)
   	- [Faktúry](#faktúry)
   	- [Mapovanie prepravcov](#mapovanie-prepravcov)
   - [Exportovanie](#exportovanie)
-    - [Produkty](#produkty)
-    - [Objednávky](#objednávky)
+    - [Produkty](#exportovanie-produktov)
+    - [Objednávky](#exportovanie-objednávok)
 
 
 ### Inštalácia
@@ -63,13 +64,11 @@ Pugin z nasledujúcich dvoch polí vytvorí URL faktúry, pod ktorým je prístu
 Slúži na mapovanie Woocommerce prepravcov na prepravcov v systéme ZOE.
 
 
-Plugin odosiela objednávky pomocou jobu, raz za hodinu. Odosielajú sa všetky objednávky v stave Spracováva sa, ktoré sú vytvorené za posledných 48h a staršie ako 10 min.
-
 ### Exportovanie
 Popis exportu produktov a objednávok.
 Na správne nastavenie integrácie treba po nainštalovaní pluginu exportovať produkty do systému ZOE.
 
-#### Produkty
+#### Exportovanie produktov
 
 ![](images/product.png)
 
@@ -83,7 +82,7 @@ Na správne nastavenie integrácie treba po nainštalovaní pluginu exportovať 
 
 ![](images/variable.png)
 
-#### Objednávky
+#### Exportovanie objednávok
 
 - Záložka slúži na prehľad a hromadný export objednávok do systému.
 - Exportujú sa neexportované objednávky v stave Spracováva sa, staršie ako 10 min a novšie ako 48h

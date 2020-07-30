@@ -1,57 +1,81 @@
-Inštalácia
------------
+# Fullfilment by FHB - woocommerce plugin
+Plugin for integration woocommerce store with ZOE fullfilment system
 
-- plugin rozbalíme do priečinka wp-content/plugins
-- aktivuje sa v sekcii Pluginy
+Čítaj tiež po [Slovensky](readme.sk.md)
 
-![](images/plugin.png)
+## Contents
+  - [Instalation](#inštalácia)
+  - [Settings](#nastavenie)
+  	- [Connection](#connection)
+  	- [Orders](#orders)
+  	- [Mapping of statuses](#mapping-of-statuses)
+  	- [Payment methods](#payment-methods)
+  	- [Invoices](#invoices)
+  	- [Mapping of carriers](#mapping-of-carriers)
+  - [Exporting](#exporting)
+    - [Products](#exporting-of-products)
+    - [Orders](#exporting-of-orders)
 
-- v menu sa vytvori nova položka FHB Kika API
 
-![](images/menu.png)
+### Instalation
+- it is possible to install plugin unzipping directly to plugins folder, or import ZIP archive in plugins section of woocommerce
+- activation in Plugins section
 
-Záložka nastavenie
-------------------
+- after activation, new item appears in menu, named FHB Kika API
 
-![](images/setting.png)
-![](images/setting2.png)
-![](images/setting3.png)
+![](images/menu.en.png)
 
-- API AppId a Secret podla zoe
-- Sandbox mod - slúži na testovanie. Ak je zapnutý, posiela plugin požiadavky na dev server.
-- Default prepravca - vyber štandardného prepravcu. Zoznam sa aktualizuje raz za 7 dní.
-- Prefix API ID - pridá prefix k API ID. V prípade ak ma užívateľ viac obchodov aby neprišlo ku kolízii čísiel. 
-- Mapovanie statusov - tu sa dajú namapovať Kika API notify linky na Woocomerce statusy. Napr: 
-   - Notifikácia confirmed na Spracováva sa
-   - Notifikácia sent na Vybavená
-   - Notifikácia returned na Zrušenia
-- Zrušenie objednávky - nastavenie statusov pri ktorých sa objednávka vymaže zo Zoe. Je možné len v prípade, že je v Zoe v stave Pending.
-- Platobné metódy - nastavenie pri ktorej metóde sa posiela suma do API. Defaultne je zapnutá Dobierka
-- Faktúry - nastavenie umiestnenia faktúry. Ak nejaký plugin generuje faktúru, a ukladá jej url do parametra objednávky, stačí vyplniť "Pole s faktúrou". Ak sa do tohto poľa ukladá iba názov súboru, tak treba nastaviť aj prefix tohto súboru - vyskladá sa URL faktúry ktorá sa pošle s objednávkou.
-- Mapovanie prepravcov - nastavenie mapovania prepravcu vo Woocommerce na prepravcu v fullfilment systéme Kika
+### Settings
 
-Plugin odosiela objednávky pomocou jobu, raz za hodinu. Odosielajú sa všetky objednávky v stave Spracováva sa, ktoré sú vytvorené za posledných 48h a staršie ako 10 min.
+![](images/setting.en.png)
+![](images/setting1.en.png)
 
-Záložka produkty
-----------------
+#### Connection
+- API AppId + API Secret - values generated in ZOE system, for pairing with ZOE account
+- Sandbox Mode - checkbox, indicates if plugin is connected to production, or test system. Checked if connected to test system
 
-![](images/product.png)
+#### Orders
+- default carrier - optional, default carrier that will be assigned to order
+- Prefix API Id - prefix for order ID, necessary to fill with different values if multiple plugins are connected to the same ZOE account
 
-- Záložka slúži na prehľad a hromadný export produktov do systému.
-- Produkt sa dá alternatívne exportovať v detaile produktu.
-- Každý jednoduchý produkt musí mať pred exportom nastavene unikátne SKU. Nastavuje sa v Detail produktu/Údaje o produkte/Sklad/Katalógové číslo
+#### Mapping of statuses
+Changes woocommerce order status when order change happen in fullfilment center.
 
-![](images/simple.png)
+- Notification confirmed - set status when order processing started
+- Notification sent - set status when order is sent (usually set to Completed)
+- Notification returned - set status when order is returned
 
-- Pri variabilných produktov musí mať nastavené SKU každá varianta. Nastavuje sa v Detail produktu/Údaje o produkte/Varianty/Katalógové číslo
+- Order cancellation on statuses - when order status change to one of selected status, plugin tries to cancell order from ZOE system. Order cancellation is possible only when order processing have not started yet (order has pending status)
 
-![](images/variable.png)
+#### Payment methods
+Setting of COD payments. For selected payment methods, plugin send COD amount to ZOE system.
 
-Záložka objednávky
-------------------
+#### Invoices
+Setting for sending invoice to ZOE system (only when invoice should be printed and attached to order).
+Plugin creates invoice URL from following 2 fields
+- Invoice field - order custom field that contains invoice URL, or file name
+- Invoice prefix - if "Invoice field" contains only name of file, there should be path where file is located
 
-- Záložka slúži na prehľad a hromadný export objednávok do systému.
-- Exportujú sa neexportované objednávky v stave Spracováva sa, staršie ako 10 min a novšie ako 48h.
-- Objednávka sa dá alternatívne exportovať v detaile objednávky, kde sa dajú upraviť tiež parametre exportu ak COD a dopravca.
+#### Mapping of carriers
+Setting for mapping woocommerce carriers to carriers in ZOE system.
 
-![](images/order.png)
+
+### Exporting
+For proper integration, products must be exported before sending actual orders!
+
+#### Exporting of products
+
+![](images/product.en.png)
+
+- tab is used for an overview and bulk export of product to the ZOE system
+- it is possible to export product individually in product detail
+- every simple product must have set unique SKU. It can be set up in product detail -> inventory -> SKU
+- for variable products, every variant must have unique SKU (every variant is created as separate product in ZOE). Variable product variant can be set up in product detail -> variantions (expand variation) -> SKU
+
+#### Exporting of orders
+
+- overview and bulk export orders from system
+- only unexported orders, in processing status, older than 10 minutes and newer than 2 days are exported
+- order can be also exported individually in order detail, cod amount and carrier can be specifically set
+
+![](images/order.en.png)
