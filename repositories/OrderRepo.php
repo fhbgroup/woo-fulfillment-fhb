@@ -155,13 +155,24 @@ class OrderRepo
 
 	public function prepareData(WC_Order $order)
 	{
+		$addrType = $order->shipping_first_name ? 'shipping' : 'billing';
 
-		$name = $order->shipping_first_name . ' ' . $order->shipping_last_name;
-		$name = ($order->shipping_company) ? $order->shipping_company . ' - ' . $name : $name;
+		$name = $order->{$addrType.'_first_name'} . ' ' . $order->{$addrType.'_last_name'};
+		$name = ($order->{$addrType.'_company'}) ? $order->{$addrType.'_company'} . ' - ' . $name : $name;
 
-		$street = $order->shipping_address_1;
-		$street .= $order->shipping_address_2 ? ', ' . $order->shipping_address_2 : '';
-		$street .= $order->shipping_state ? ', ' . $order->shipping_state : '';
+		$street = $order->{$addrType.'_address_1'};
+		$street .= $order->{$addrType.'_address_2'} ? ', ' . $order->{$addrType.'_address_2'} : '';
+		$street .= $order->{$addrType.'_state'} ? ', ' . $order->{$addrType.'_state'} : '';
+
+        if ($order->{$addrType.'_state'}) { //get state name instead of code
+        	$state = WC()->countries->get_states($order->{$addrType.'_country'})[$order->{$addrType.'_state'}];
+        	$state = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
+        	$city = $order->{$addrType.'_city'} . ' / ' . $state;
+        	$postcode = $order->{$addrType.'_postcode'} ? $order->{$addrType.'_postcode'} : '00000';
+        } else {
+        	$city = $order->{$addrType.'_city'};
+        	$postcode = $order->{$addrType.'_postcode'};
+        }
 
         if ($this->invoice_field) {
             $invoice = get_post_meta($order->get_id(), $this->invoice_field, true);
@@ -169,6 +180,8 @@ class OrderRepo
                 $invoiceLink = $this->invoice_prefix . $invoice;
             }
         }
+
+        $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
 
         $shippingName = '';
         $zasilkovna_id = get_post_meta($order->get_id(), 'zasilkovna_id_pobocky', true);
@@ -185,17 +198,6 @@ class OrderRepo
 		if ($zasilkovna_id) {
 			$street .= ' (' . $zasilkovna_id . ')';
 		}
-
-        $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
-        if ($order->shipping_state) { //get state name instead of code
-        	$state = WC()->countries->get_states($order->shipping_country)[$order->shipping_state];
-        	$state = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
-        	$city = $order->shipping_city . ' / ' . $state;
-        	$postcode = $order->shipping_postcode ? $order->shipping_postcode : '00000';
-        } else {
-        	$city = $order->shipping_city;
-        	$postcode = $order->shipping_postcode;
-        }
 
         $data = [
 			'id' => $order->id,
