@@ -155,7 +155,7 @@ class OrderRepo
 
 	public function prepareData(WC_Order $order)
 	{
-		$addrType = $order->shipping_first_name ? 'shipping' : 'billing';
+		$addrType = ($order->shipping_first_name || $order->shipping_first_name) ? 'shipping' : 'billing';
 
 		$name = $order->{$addrType.'_first_name'} . ' ' . $order->{$addrType.'_last_name'};
 		$name = ($order->{$addrType.'_company'}) ? $order->{$addrType.'_company'} . ' - ' . $name : $name;
@@ -203,12 +203,12 @@ class OrderRepo
 			'id' => $order->id,
 			'variableSymbol' => $order->get_order_number(),
 			'name' => $name,
-			'email' => $order->billing_email,
+			'email' => $order->{$addrType.'_email'},
 			'street' => $street,
-			'country' => mb_strtolower($order->shipping_country),
+			'country' => mb_strtolower($order->{$addrType.'_country'}),
 			'city' => $city,
 			'psc' => $postcode,
-			'phone' => $order->billing_phone ? $order->billing_phone : null,
+			'phone' => $order->{$addrType.'_phone'} ? $order->{$addrType.'_phone'} : null,
 			'invoiceLink' => $invoiceLink ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->payment_method) ? $order->get_total() : 0,
 			'parcelService' => $deliveryService,
