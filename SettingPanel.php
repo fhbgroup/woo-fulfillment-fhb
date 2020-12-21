@@ -34,7 +34,10 @@ class SettingPanel
 
 		$gateways = new WC_Payment_Gateways();
 		$methods = [];
-		foreach($gateways->get_available_payment_gateways() as $method) {
+		foreach($gateways->payment_gateways() as $method) {
+			if($method->enabled !== 'yes') {
+				continue;
+			}
 			$methods['kika_method_' . $method->id] = $method->title;
 		}
 
