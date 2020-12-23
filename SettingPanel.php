@@ -74,7 +74,10 @@ class SettingPanel
 		update_option('kika_status_delete', is_array($_POST['delete']) ? array_map('sanitize_text_field', $_POST['delete']) : null);
 
 		$gateways = new WC_Payment_Gateways();
-		foreach($gateways->get_available_payment_gateways() as $method) {
+		foreach($gateways->payment_gateways() as $method) {
+			if($method->enabled !== 'yes') {
+				continue;
+			}
 			$id = 'kika_method_' . $method->id;
 			update_option($id, sanitize_text_field($_POST[$id]));
 		}
