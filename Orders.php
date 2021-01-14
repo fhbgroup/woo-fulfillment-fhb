@@ -6,6 +6,7 @@ use Kika\Api\OrderApi;
 use Kika\Api\RestApiException;
 use Kika\Repositories\OrderRepo;
 use Kika\Repositories\ParcelServiceRepo;
+use WC_Order;
 
 
 class Orders
