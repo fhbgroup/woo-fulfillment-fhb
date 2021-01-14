@@ -8,7 +8,7 @@
  * Plugin Name: Kika API
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
- * Version: 2.24
+ * Version: 2.25
  * Text Domain: woocommerce-fhb-api
  * Domain Path: /languages
  */
@@ -82,9 +82,10 @@ $productRepo = new ProductRepo();
 $parcelServiceRepo = new ParcelServiceRepo($infoApi);
 $orderRepo = new OrderRepo($parcelServiceRepo);
 
-new Orders($orderApi, $orderRepo, $parcelServiceRepo);
+$orders = new Orders($orderApi, $orderRepo, $parcelServiceRepo);
 new Products($productApi, $productRepo);
 new SettingPanel($parcelServiceRepo);
+
 
 add_filter( 'manage_edit-shop_order_columns', function($columns) {
 	$new_columns = array();
@@ -96,6 +97,24 @@ add_filter( 'manage_edit-shop_order_columns', function($columns) {
 	}
 	return $new_columns;
 }, 20);
+
+
+add_filter('bulk_actions-edit-shop_order', function($actions) {
+	$actions['fhb-bulk-export'] = "FHB Bulk export";
+	return $actions;
+}, 20, 1);
+
+
+add_filter('handle_bulk_actions-edit-shop_order', function($redirect_to, $action, $post_ids) use ($orders) {
+	if($action != 'fhb-bulk-export') {
+		return $redirect_to;
+	}
+
+	$orders->bulkExport($post_ids);
+
+	return $redirect_to;
+}, 20, 3);
+
 
 add_action('manage_shop_order_posts_custom_column', function($column, $post_id) {
 	echo get_post_meta($post_id, $column, true);

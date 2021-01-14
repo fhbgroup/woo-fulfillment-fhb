@@ -79,3 +79,8 @@ For proper integration, products must be exported before sending actual orders!
 - order can be also exported individually in order detail, cod amount and carrier can be specifically set
 
 ![](images/orders.en.png)
+
+Bulk export of orders is also possible via bulk action "FHB Bulk export" on Orders overview page. 
+All unexported marked orders will be exported.
+
+![](images/bulkexport.png)

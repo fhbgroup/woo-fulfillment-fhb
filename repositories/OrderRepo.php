@@ -181,8 +181,6 @@ class OrderRepo
             }
         }
 
-        $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
-
         $shippingName = '';
         $zasilkovna_id = get_post_meta($order->get_id(), 'zasilkovna_id_pobocky', true);
         foreach ($order->get_items('shipping') as $item) {
@@ -198,6 +196,8 @@ class OrderRepo
 		if ($zasilkovna_id) {
 			$street .= ' (' . $zasilkovna_id . ')';
 		}
+
+        $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
 
         $data = [
 			'id' => $order->id,

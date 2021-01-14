@@ -145,6 +145,27 @@ class Orders
 	}
 
 
+	public function bulkExport($post_ids)
+	{
+		$data = [];
+
+		foreach ($post_ids as $post_id) {
+
+			$exported = get_post_meta($post_id, OrderRepo::STATUS_KEY, true) == OrderRepo::STATUS_SYNCED;
+			if($exported)
+				continue;
+
+			$order = new WC_Order($post_id);
+			$data[] = $this->orderRepo->prepareData($order);
+		}
+
+		if(count($data)) {
+			$this->exportOrders($data, time());
+		}		
+	}
+
+
+
 	public function delete($id)
 	{
 		if (get_post_meta($id, OrderRepo::STATUS_KEY, true) != OrderRepo::STATUS_SYNCED) {
@@ -208,7 +229,7 @@ class Orders
 			update_post_meta($id, OrderRepo::EXPORT_KEY, $export);
 
 			$token = md5(wp_generate_password(10, true, true));
-			$url = home_url() . "?action=kika-notification&order=$id&token=$token";
+			$url = home_url() . "/?action=kika-notification&order=$id&token=$token";
 
 			$order['_embedded']['notifyLinks'][] = [
 				'confirmed' => "$url&type=confirmed",

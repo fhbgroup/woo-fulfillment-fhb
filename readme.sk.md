@@ -89,3 +89,8 @@ Na správne nastavenie integrácie treba po nainštalovaní pluginu exportovať 
 - Objednávka sa dá alternatívne exportovať v detaile objednávky, kde sa dajú upraviť parametre exportu ako COD a prepravca
 
 ![](images/order.png)
+
+Hromadný export objednávok je možný cez hromadný príkaz "FHB Bulk export" v prehľade objednávok.
+Všetky neexportované označené objednávky sa touto akcou exportujú.
+
+![](images/bulkexport.png)
