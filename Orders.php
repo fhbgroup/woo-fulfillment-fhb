@@ -166,6 +166,22 @@ class Orders
 	}
 
 
+	public function getOrder($id)
+	{
+		if (get_post_meta($id, OrderRepo::STATUS_KEY, true) != OrderRepo::STATUS_SYNCED) {
+			return;
+		}
+
+		$exportId = get_post_meta($id, OrderRepo::API_ID_KEY, true);
+
+		try {
+			$order = $this->orderApi->read($exportId ? $exportId : $id);
+			return $order;
+		} catch(RestApiException $e) {
+			return;
+		}		
+ 	}
+
 
 	public function delete($id)
 	{
@@ -201,8 +217,38 @@ class Orders
 			$status = get_option("kika_notify_$type");
 			$order = wc_get_order($id);
 
+
 			if ($order and $status) {
 				$order->update_status($status, '', true);
+			}
+
+			if($type == 'sent') {
+				$trackingUrls = [];
+				$kikaOrder = $this->getOrder($id);
+
+				if($kikaOrder->status !== 'sent') {
+					exit;
+				}
+
+				if(isset($kikaOrder->_embedded->trackingNumber)) {
+					$trackings = $kikaOrder->_embedded->trackingNumber;
+				} else {
+					exit;
+				}
+
+				$msg = __('Order was sent with tracking number ', 'woocommerce-fhb-api');
+				if(isset($kikaOrder->_embedded->trackingLink)) {
+					foreach ($trackings  as $i => $track) {
+						$msg .= '<a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
+					}
+
+				} else {
+					$msg .= implode($trackings, ',');
+				}
+
+				$msg .= ".";
+
+				$order->add_order_note($msg, true);
 			}
 
 			exit;

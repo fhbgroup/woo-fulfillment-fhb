@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Blank WordPress Pot v1.0.0\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2020-07-29 15:45+0200\n"
+"POT-Creation-Date: 2021-01-19 17:10+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Your Team <translations@example.com>\n"
@@ -29,14 +29,18 @@ msgstr ""
 "X-Poedit-SearchPath-3: Products.php\n"
 "X-Poedit-SearchPath-4: SettingPanel.php\n"
 
-#: Orders.php:47 templates/orderStats.php:5 templates/orders.php:4
+#: Orders.php:48 templates/orderStats.php:5 templates/orders.php:4
 #: templates/settings.php:37
 msgid "Orders"
 msgstr "Objednávky"
 
-#: Orders.php:134
+#: Orders.php:140
 msgid "Order exported"
 msgstr "Objednávka exportovaná"
+
+#: Orders.php:239
+msgid "Order was sent with tracking number "
+msgstr "Objednávka bola odoslaná so sledovacím číslom "
 
 #: Products.php:33 templates/products.php:4
 msgid "Products"

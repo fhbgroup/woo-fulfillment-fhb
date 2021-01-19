@@ -3,6 +3,10 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+### Version 2.26
+- invoice prefix placeholder {order_id}
+- tracking saving into order note (customer note)
+
 ### Version 2.25
 - bulk order export from order list page
 
