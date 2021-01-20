@@ -176,7 +176,7 @@ class OrderRepo
 
         if ($this->invoice_field || $this->invoice_prefix) {
         	$invoiceLink = str_replace('{order_id}', (string) $order->get_id(), $this->invoice_prefix);
-            $invoice = get_post_meta($order->get_id(), $this->invoice_field, true);
+            $invoice = $this->invoice_field ? get_post_meta($order->get_id(), $this->invoice_field, true) : '';
             if ($invoice) {
                 $invoiceLink .= $invoice;
             }

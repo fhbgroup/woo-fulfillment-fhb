@@ -239,7 +239,7 @@ class Orders
 				$msg = __('Order was sent with tracking number ', 'woocommerce-fhb-api');
 				if(isset($kikaOrder->_embedded->trackingLink)) {
 					foreach ($trackings  as $i => $track) {
-						$msg .= '<a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
+						$msg .= ' <a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
 					}
 
 				} else {
