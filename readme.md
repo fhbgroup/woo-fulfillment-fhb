@@ -37,6 +37,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 #### Orders
 - default carrier - optional, default carrier that will be assigned to order
 - Prefix API Id - prefix for order ID, necessary to fill with different values if multiple plugins are connected to the same ZOE account
+- Ignore product prefix - products whose SKU starts with this string will be ignored
 
 #### Mapping of statuses
 Changes woocommerce order status when order change happen in fullfilment center.
