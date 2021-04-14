@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+### Version 2.27
+- ignored product prefix setting - product wich SKU starts with set prefix will be ignored
+
 ### Version 2.26
 - invoice prefix placeholder {order_id}
 - tracking saving into order note (customer note)

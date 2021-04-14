@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Blank WordPress Pot v1.0.0\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2021-01-19 17:10+0100\n"
+"POT-Creation-Date: 2021-04-14 16:47+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Your Team <translations@example.com>\n"
@@ -110,67 +110,71 @@ msgstr "Použiť testovací server"
 msgid "Default carrier"
 msgstr "Predvolený prepravca"
 
-#: templates/settings.php:61
+#: templates/settings.php:60
+msgid "Ignore product prefix"
+msgstr "Prefix ignorovaného produktu"
+
+#: templates/settings.php:66
 msgid "Mapping of statuses"
 msgstr "Mapovanie statusov"
 
-#: templates/settings.php:66
+#: templates/settings.php:71
 msgid "Notification confirmed"
 msgstr "Notifikácia confirmed"
 
-#: templates/settings.php:80
+#: templates/settings.php:85
 msgid "Notification sent"
 msgstr "Notifikácia sent"
 
-#: templates/settings.php:94
+#: templates/settings.php:99
 msgid "Notification delivered"
 msgstr "Notifikácia delivered"
 
-#: templates/settings.php:108
+#: templates/settings.php:113
 msgid "Notification returned"
 msgstr "Notifikácia returned"
 
-#: templates/settings.php:122
+#: templates/settings.php:127
 msgid "Order cancellation on stauses"
 msgstr "Zrušenie objednávky pri statusoch"
 
-#: templates/settings.php:136
+#: templates/settings.php:141
 msgid "Payment methods"
 msgstr "Platobné metódy"
 
-#: templates/settings.php:146
+#: templates/settings.php:151
 msgid "Send amount"
 msgstr "Poslať čiastku do API"
 
-#: templates/settings.php:153
+#: templates/settings.php:158
 msgid "Invoices"
 msgstr "Faktúra"
 
-#: templates/settings.php:158
+#: templates/settings.php:163
 msgid "Invoice prefix"
 msgstr "Prefix faktúry"
 
-#: templates/settings.php:163
+#: templates/settings.php:168
 msgid "Invoice field"
 msgstr "Pole s faktúrou"
 
-#: templates/settings.php:170
+#: templates/settings.php:175
 msgid "Mapping of carriers"
 msgstr "Mapovanie prepravcov"
 
-#: templates/settings.php:174
+#: templates/settings.php:179
 msgid "Woocommerce carrier"
 msgstr "Woocommerce prepravca"
 
-#: templates/settings.php:175
+#: templates/settings.php:180
 msgid "Fullfilment carrier"
 msgstr "Fullfilment prepravca"
 
-#: templates/settings.php:219
+#: templates/settings.php:224
 msgid "Add new line"
 msgstr "Pridať nový riadok"
 
-#: templates/settings.php:223
+#: templates/settings.php:228
 msgid "Save"
 msgstr "Uložiť"
 

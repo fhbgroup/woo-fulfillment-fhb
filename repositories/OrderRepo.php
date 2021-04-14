@@ -22,6 +22,7 @@ class OrderRepo
 
     private $invoice_prefix;
     private $invoice_field;
+	private $productIgnoredPrefix;
 
     /** @var array */
     private $deliveryServiceMapping;
@@ -34,7 +35,7 @@ class OrderRepo
 
         $this->invoice_prefix = get_option('kika_invoice_prefix', null);
         $this->invoice_field = get_option('kika_invoice_field', null);
-
+        $this->productIgnoredPrefix = get_option('kika_ignore_product_prefix', null);
     }
 
 
@@ -218,7 +219,7 @@ class OrderRepo
 		$items = $order->get_items();
 		foreach ($items as $item_id => $item) {
 			$product = $order->get_product_from_item($item);
-            if(strtolower(substr( $product->get_sku(), 0, 6 )) === "ignore"){
+            if($this->productIgnoredPrefix && substr( $product->get_sku(), 0, strlen($this->productIgnoredPrefix)) === $this->productIgnoredPrefix){
                 continue;
             }
 			$data['_embedded']['items'][] = [

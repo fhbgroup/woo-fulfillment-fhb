@@ -56,6 +56,11 @@
 				<td><input name="prefix" type="text" id="secret" value="<?php echo get_option('kika_prefix') ?>" class="regular-text" maxlength="4" /></td>
 			</tr>
 
+			<tr>
+				<th><label for="ignoreProductPrefix"><?php _e('Ignore product prefix','woocommerce-fhb-api'); ?></label></th>
+				<td><input id="ignoreProductPrefix" type="text" name="ignoreProductPrefix" value="<?php echo get_option('kika_ignore_product_prefix') ?>" /></td>
+			</tr>
+
 		</table>
 
 		<h2><?php _e('Mapping of statuses','woocommerce-fhb-api'); ?></h2>
