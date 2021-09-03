@@ -61,6 +61,11 @@
 				<td><input id="ignoreProductPrefix" type="text" name="ignoreProductPrefix" value="<?php echo get_option('kika_ignore_product_prefix') ?>" /></td>
 			</tr>
 
+			<tr>
+				<th><label for="ignoreCountries"><?php _e('Ignored countries (comma delimited country codes)','woocommerce-fhb-api'); ?></label></th>
+				<td><input id="ignoreCountries" type="text" name="ignoreCountries" value="<?php echo get_option('kika_ignore_countries') ?>" /></td>
+			</tr>
+
 		</table>
 
 		<h2><?php _e('Mapping of statuses','woocommerce-fhb-api'); ?></h2>

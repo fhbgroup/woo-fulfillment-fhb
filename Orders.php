@@ -21,12 +21,16 @@ class Orders
 	/** @var ParcelServiceRepo */
 	private $parcelServiceRepo;
 
+    /** @var array */
+    private $ignoreCountries;
+
 
 	public function __construct(OrderApi $orderApi, OrderRepo $orderRepo, ParcelServiceRepo $parcelServiceRepo)
 	{
 		$this->orderApi = $orderApi;
 		$this->orderRepo = $orderRepo;
 		$this->parcelServiceRepo = $parcelServiceRepo;
+		$this->ignoreCountries = explode(strtolower(get_option('kika_ignore_countries', null)), ',');
 
 		add_action('admin_menu', [$this, 'addMenuItems']);
 		add_action('add_meta_boxes', [$this, 'addMetaBoxes']);
@@ -289,6 +293,11 @@ class Orders
                 update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
                 $logs[] = '<span class="log-error">Order has no products, order skipped.</span>';
 			    continue;
+            }
+
+            if (in_array($order['country'], $this->ignoreCountries)) {
+            	update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+            	continue;
             }
 
 			try {
