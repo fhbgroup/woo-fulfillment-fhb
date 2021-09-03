@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+### Version 2.28
+- ignore countries setting - country codes of countries that will be ignored, separated by comma
+
 ### Version 2.27
 - ignored product prefix setting - product wich SKU starts with set prefix will be ignored
 

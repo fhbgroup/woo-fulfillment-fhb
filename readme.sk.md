@@ -42,6 +42,7 @@ Read this in [English](readme.md)
 - default prepravca - nepovinné, default prepravca ktorý sa prideľuje objednávke
 - Prefix API Id - prefix k ID objednávky, nutné vyplniť rôznymi hodnotamiu ak sa používa vo viacerých eshopoch
 - Prefix ignorovaného produktu - produkty, ktorých kód (SKU) začína na nastavený reťazec, budú ignorované
+- Ignorované krajiny - čiarkou oddelený zoznam kódov krajín, ktoré budú ignorované
 
 #### Mapovanie statusov
 Slúži na zmenu statusu objednávky keď sa zmení stav objednávky vo fullfilment centre.
