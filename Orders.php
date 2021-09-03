@@ -30,7 +30,7 @@ class Orders
 		$this->orderApi = $orderApi;
 		$this->orderRepo = $orderRepo;
 		$this->parcelServiceRepo = $parcelServiceRepo;
-		$this->ignoreCountries = explode(strtolower(get_option('kika_ignore_countries', null)), ',');
+		$this->ignoreCountries = explode(',', strtolower(get_option('kika_ignore_countries', null)));
 
 		add_action('admin_menu', [$this, 'addMenuItems']);
 		add_action('add_meta_boxes', [$this, 'addMetaBoxes']);
@@ -297,6 +297,7 @@ class Orders
 
             if (in_array($order['country'], $this->ignoreCountries)) {
             	update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+            	$logs[] = '<span class="log-error">Order country not allowed, order skipped.</span>';
             	continue;
             }
 
