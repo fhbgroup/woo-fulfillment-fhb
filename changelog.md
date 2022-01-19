@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.0
+- plugin moved into new repository
+
 ### Version 2.28
 - ignore countries setting - country codes of countries that will be ignored, separated by comma
 
