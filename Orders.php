@@ -294,7 +294,7 @@ class Orders
 			$order['variableSymbol'] = $prefix ? $prefix . '-' . $order['variableSymbol'] : $order['variableSymbol'];
 
 
-			if(isset($order['groupedIds']) {
+			if(isset($order['groupedIds'])) {
 				$ids[] = $order['groupedIds'];
 			} else {
 				$ids[] = $id;
