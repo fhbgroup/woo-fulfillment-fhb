@@ -161,7 +161,13 @@ class Orders
 				continue;
 
 			$order = new WC_Order($post_id);
-			$data[] = $this->orderRepo->prepareData($order);
+			$orderData = $this->orderRepo->prepareData($order);
+			
+			if(isset($data[$order->get_customer_id()])) {
+				$orderData = $this->orderRepo->groupOrders($data[$order->get_customer_id()], $orderData);
+			}
+			$data[$order->get_customer_id()] = $orderData;
+			
 		}
 
 		if(count($data)) {
@@ -209,50 +215,60 @@ class Orders
 	{
 		if (isset($_GET['action']) and $_GET['action'] == 'kika-notification') {
 
-			$id = (int)$_GET['order'];
+			if($_GET['order']) {
+				$ids[] = (int) $_GET['order'];
+			} elseif($_GET['orders']) {
+				$ids[] = array_map('intval', explode(',', $_GET['orders']));
+			}
+
+
 			$type = sanitize_text_field($_GET['type']);
 			$token = $_GET['token'];
 
-			if (get_post_meta($id, OrderRepo::TOKEN_KEY, true) != $token) {
-				header('HTTP/1.0 403 Forbidden');
-				exit;
-			}
-
 			$status = get_option("kika_notify_$type");
-			$order = wc_get_order($id);
 
+			foreach($ids as $orderId) {
 
-			if ($order and $status) {
-				$order->update_status($status, '', true);
-			}
-
-			if($type == 'sent') {
-				$trackingUrls = [];
-				$kikaOrder = $this->getOrder($id);
-
-				if($kikaOrder->status !== 'sent') {
+				if (get_post_meta($orderId, OrderRepo::TOKEN_KEY, true) != $token) {
+					header('HTTP/1.0 403 Forbidden');
 					exit;
 				}
 
-				if(isset($kikaOrder->_embedded->trackingNumber)) {
-					$trackings = $kikaOrder->_embedded->trackingNumber;
-				} else {
-					exit;
+				$order = wc_get_order($orderId);
+
+
+				if ($order and $status) {
+					$order->update_status($status, '', true);
 				}
 
-				$msg = __('Order was sent with tracking number ', 'woocommerce-fhb-api');
-				if(isset($kikaOrder->_embedded->trackingLink)) {
-					foreach ($trackings  as $i => $track) {
-						$msg .= ' <a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
+				if($type == 'sent') {
+					$trackingUrls = [];
+					$kikaOrder = $this->getOrder($orderId);
+
+					if($kikaOrder->status !== 'sent') {
+						exit;
 					}
 
-				} else {
-					$msg .= implode($trackings, ',');
+					if(isset($kikaOrder->_embedded->trackingNumber)) {
+						$trackings = $kikaOrder->_embedded->trackingNumber;
+					} else {
+						exit;
+					}
+
+					$msg = __('Order was sent with tracking number ', 'woocommerce-fhb-api');
+					if(isset($kikaOrder->_embedded->trackingLink)) {
+						foreach ($trackings  as $i => $track) {
+							$msg .= ' <a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
+						}
+
+					} else {
+						$msg .= implode($trackings, ',');
+					}
+
+					$msg .= ".";
+
+					$order->add_order_note($msg, true);
 				}
-
-				$msg .= ".";
-
-				$order->add_order_note($msg, true);
 			}
 
 			exit;
@@ -277,10 +293,26 @@ class Orders
 			$order['id'] = $prefix ? $prefix . '-' . $id : $id;
 			$order['variableSymbol'] = $prefix ? $prefix . '-' . $order['variableSymbol'] : $order['variableSymbol'];
 
-			update_post_meta($id, OrderRepo::EXPORT_KEY, $export);
+
+			if(isset($order['groupedIds']) {
+				$ids[] = $order['groupedIds'];
+			} else {
+				$ids[] = $id;
+			}
+            unset($order['groupedIds']);
+
+
+			bulk_update_post_meta($ids, OrderRepo::EXPORT_KEY, $export);
 
 			$token = md5(wp_generate_password(10, true, true));
-			$url = home_url() . "/?action=kika-notification&order=$id&token=$token";
+			$url = home_url() . "/?action=kika-notification&token=$token";
+
+			if(count($ids) == 1) {
+				$url .= "&order=" . $ids[0];
+			} else {
+				$url .= "&orders=" . implode(',', $ids);
+			}
+
 
 			$order['_embedded']['notifyLinks'][] = [
 				'confirmed' => "$url&type=confirmed",
@@ -290,33 +322,33 @@ class Orders
 			];
 
 			if (empty($order['_embedded']['items'])) {
-                update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+                bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
                 $logs[] = '<span class="log-error">Order has no products, order skipped.</span>';
 			    continue;
             }
 
             if (in_array($order['country'], $this->ignoreCountries)) {
-            	update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+            	bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
             	$logs[] = '<span class="log-error">Order country not allowed, order skipped.</span>';
             	continue;
             }
 
+
 			try {
 				$this->orderApi->create($order);
-				update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SYNCED);
-				update_post_meta($id, OrderRepo::TOKEN_KEY, $token);
-				update_post_meta($id, OrderRepo::API_ID_KEY, $exportId);
+				bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SYNCED);
+				bulk_update_post_meta($ids, OrderRepo::TOKEN_KEY, $token);
+				bulk_update_post_meta($ids, OrderRepo::API_ID_KEY, $exportId);
 
 			} catch (RestApiException $e) {
-				update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
-				update_post_meta($id, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
+				bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
+				bulk_update_post_meta($ids, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
 				$logs[] = $this->createErrorMessage($e, $order, $single);
 			}
 		}
 
 		return $logs;
 	}
-
 
 	private function createStats()
 	{
@@ -337,6 +369,14 @@ class Orders
         ];
 		echo json_encode($result);
 		wp_die();
+    }
+
+
+    private function bulk_update_post_meta($ids, $key, $value)
+    {
+    	foreach ($ids as $id) {
+    		update_post_meta($id, $key, $value);
+    	}
     }
 
 }

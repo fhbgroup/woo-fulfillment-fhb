@@ -47,7 +47,15 @@ class OrderRepo
 		while ($loop->have_posts()) {
 			$loop->the_post();
 			$order = new WC_Order(get_the_ID());
-			$data[] = $this->prepareData($order);
+
+			$orderData = $this->prepareData($order);
+
+			if(isset($data[$order->get_customer_id()])) {
+				$orderData = $this->groupOrders($data[$order->get_customer_id()], $orderData);
+			}
+
+			$data[$order->get_customer_id()] = $orderData;
+
 		};
 
 		wp_reset_postdata();
@@ -229,6 +237,27 @@ class OrderRepo
 		}
 
 		return $data;
+	}
+
+	public function groupOrders($order1, $order2)
+	{
+		$order1['cod'] += $order2['cod'];
+
+		foreach ($order2['_embedded']['items'] as $o2item) {
+			foreach ($order1['_embedded']['items'] as &$o1item) {
+				if($o1item['id'] == $o2item['id']) {
+					$o1item['qty'] += $o2item['qty'];
+					continue 2;
+				}
+			}
+			$order1['_embedded']['items'][] = $o2item;
+		}
+
+		$order1['groupedIds'][] = $order1['id'];
+		$order1['groupedIds'][] = $order2['id'];
+		$order1['groupedIds'] = array_unique($order1['groupedIds']);
+
+		return $order1;
 	}
 
 }
