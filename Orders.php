@@ -273,7 +273,8 @@ class Orders
 		$prefix = get_option('kika_prefix');
 
 		foreach ($orders as $order) {
-			$order['id'] = $prefix ? $prefix . '-' . $order['id'] : $order['id'];
+			$id = $order['id'];
+			$order['id'] = $prefix ? $prefix . '-' . $id : $id;
 			$order['variableSymbol'] = $prefix ? $prefix . '-' . $order['variableSymbol'] : $order['variableSymbol'];
 
 			update_post_meta($id, OrderRepo::EXPORT_KEY, $export);

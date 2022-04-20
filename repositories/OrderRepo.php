@@ -62,7 +62,7 @@ class OrderRepo
 	}
 
 
-	public function fetchForExport($export, $limit = 5)
+	public function fetchForExport($export, $limit = 20)
 	{
 		$args = [
 			'post_type'   => 'shop_order',
