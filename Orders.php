@@ -302,7 +302,7 @@ class Orders
             unset($order['groupedIds']);
 
 
-			bulk_update_post_meta($ids, OrderRepo::EXPORT_KEY, $export);
+			$this->bulk_update_post_meta($ids, OrderRepo::EXPORT_KEY, $export);
 
 			$token = md5(wp_generate_password(10, true, true));
 			$url = home_url() . "/?action=kika-notification&token=$token";
@@ -322,13 +322,13 @@ class Orders
 			];
 
 			if (empty($order['_embedded']['items'])) {
-                bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+                $this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
                 $logs[] = '<span class="log-error">Order has no products, order skipped.</span>';
 			    continue;
             }
 
             if (in_array($order['country'], $this->ignoreCountries)) {
-            	bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+            	$this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
             	$logs[] = '<span class="log-error">Order country not allowed, order skipped.</span>';
             	continue;
             }
@@ -336,13 +336,13 @@ class Orders
 
 			try {
 				$this->orderApi->create($order);
-				bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SYNCED);
-				bulk_update_post_meta($ids, OrderRepo::TOKEN_KEY, $token);
-				bulk_update_post_meta($ids, OrderRepo::API_ID_KEY, $exportId);
+				$this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SYNCED);
+				$this->bulk_update_post_meta($ids, OrderRepo::TOKEN_KEY, $token);
+				$this->bulk_update_post_meta($ids, OrderRepo::API_ID_KEY, $exportId);
 
 			} catch (RestApiException $e) {
-				bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
-				bulk_update_post_meta($ids, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
+				$this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
+				$this->bulk_update_post_meta($ids, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
 				$logs[] = $this->createErrorMessage($e, $order, $single);
 			}
 		}
