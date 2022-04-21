@@ -221,7 +221,7 @@ class OrderRepo
 			'country' => mb_strtolower($order->{$addrType.'_country'}),
 			'city' => $city,
 			'psc' => $postcode,
-			'phone' => $order->geet_billing_phone() ? $order->get_billing_phone() : null,
+			'phone' => $order->get_billing_phone() ? $order->get_billing_phone() : null,
 			'invoiceLink' => isset($invoiceLink) ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->get_payment_method()) ? $order->get_total() : 0,
 			'parcelService' => $deliveryService,

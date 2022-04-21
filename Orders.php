@@ -292,7 +292,15 @@ class Orders
 		$logs = [];
 		$prefix = get_option('kika_prefix');
 
-		$mergedOrders = array_merge($orders['customer'], $orders['nocustomer']);
+		if(isset($orders['customer']) && isset($orders['nocustomer'])) {
+			$mergedOrders = array_merge($orders['customer'], $orders['nocustomer']);
+		} elseif(isset($orders['nocustomer'])) {
+			$mergedOrders = $orders['nocustomer'];
+		} elseif(isset($orders['customer'])) {
+			$mergedOrders = $orders['customer'];
+		} else {
+			$mergedOrders = [];
+		}
 
 		foreach ($mergedOrders as $order) {
 			$id = $order['id'];
@@ -302,7 +310,7 @@ class Orders
 
 
 			if(isset($order['groupedIds'])) {
-				$ids[] = $order['groupedIds'];
+				$ids = $order['groupedIds'];
 			} else {
 				$ids[] = $id;
 			}
