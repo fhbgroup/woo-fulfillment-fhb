@@ -50,11 +50,14 @@ class OrderRepo
 
 			$orderData = $this->prepareData($order);
 
-			if(isset($data[$order->get_customer_id()])) {
-				$orderData = $this->groupOrders($data[$order->get_customer_id()], $orderData);
-			}
-
-			$data[$order->get_customer_id()] = $orderData;
+			if($order->get_customer_id()) {
+				if(isset($data['customer'][$order->get_customer_id()])) {
+					$orderData = $this->groupOrders($data['customer'][$order->get_customer_id()], $orderData);
+				}
+				$data['customer'][$order->get_customer_id()] = $orderData;
+			} else {
+				$data['nocustomer'][] = $orderData;
+			}		
 
 		};
 
@@ -164,12 +167,12 @@ class OrderRepo
 
 	public function prepareData(WC_Order $order)
 	{
-		$addrType = ($order->shipping_first_name || $order->shipping_first_name) ? 'shipping' : 'billing';
+		$addrType = ($order->get_shipping_first_name()) ? 'shipping' : 'billing';
 
-		$name = $order->{$addrType.'_first_name'} . ' ' . $order->{$addrType.'_last_name'};
+		$name = $order->{'get_'.$addrType.'_first_name'}() . ' ' . $order->{'get_'.$addrType.'_last_name'}();
 		$name = ($order->{$addrType.'_company'}) ? $order->{$addrType.'_company'} . ' - ' . $name : $name;
 
-		$street = $order->{$addrType.'_address_1'};
+		$street = $order->{'get_'.$addrType.'_address_1'}();
 		$street .= $order->{$addrType.'_address_2'} ? ', ' . $order->{$addrType.'_address_2'} : '';
 		$street .= $order->{$addrType.'_state'} ? ', ' . $order->{$addrType.'_state'} : '';
 
@@ -179,7 +182,7 @@ class OrderRepo
         	$city = $order->{$addrType.'_city'} . ' / ' . $state;
         	$postcode = $order->{$addrType.'_postcode'} ? $order->{$addrType.'_postcode'} : '00000';
         } else {
-        	$city = $order->{$addrType.'_city'};
+        	$city = $order->{'get_'.$addrType.'_city'}();
         	$postcode = $order->{$addrType.'_postcode'};
         }
 
@@ -210,17 +213,17 @@ class OrderRepo
         $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
 
         $data = [
-			'id' => $order->id,
+			'id' => $order->get_id(),
 			'variableSymbol' => $order->get_order_number(),
 			'name' => $name,
-			'email' => $order->billing_email,
+			'email' => $order->get_billing_email(),
 			'street' => $street,
 			'country' => mb_strtolower($order->{$addrType.'_country'}),
 			'city' => $city,
 			'psc' => $postcode,
-			'phone' => $order->billing_phone ? $order->billing_phone : null,
-			'invoiceLink' => $invoiceLink ? $invoiceLink : '',
-			'cod' => get_option('kika_method_' . $order->payment_method) ? $order->get_total() : 0,
+			'phone' => $order->geet_billing_phone() ? $order->get_billing_phone() : null,
+			'invoiceLink' => isset($invoiceLink) ? $invoiceLink : '',
+			'cod' => get_option('kika_method_' . $order->get_payment_method()) ? $order->get_total() : 0,
 			'parcelService' => $deliveryService,
 		];
 
