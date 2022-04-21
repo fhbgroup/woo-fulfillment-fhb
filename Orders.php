@@ -219,10 +219,10 @@ class Orders
 	{
 		if (isset($_GET['action']) and $_GET['action'] == 'kika-notification') {
 
-			if($_GET['order']) {
-				$ids[] = (int) $_GET['order'];
-			} elseif($_GET['orders']) {
-				$ids[] = array_map('intval', explode(',', $_GET['orders']));
+			if(isset($_GET['order'])) {
+				$ids = [(int) $_GET['order']];
+			} elseif(isset($_GET['orders'])) {
+				$ids = array_map('intval', explode(',', $_GET['orders']));
 			}
 
 
@@ -250,13 +250,13 @@ class Orders
 					$kikaOrder = $this->getOrder($orderId);
 
 					if($kikaOrder->status !== 'sent') {
-						exit;
+						continue;
 					}
 
 					if(isset($kikaOrder->_embedded->trackingNumber)) {
 						$trackings = $kikaOrder->_embedded->trackingNumber;
 					} else {
-						exit;
+						continue;
 					}
 
 					$msg = __('Order was sent with tracking number ', 'woocommerce-fhb-api');
@@ -312,7 +312,7 @@ class Orders
 			if(isset($order['groupedIds'])) {
 				$ids = $order['groupedIds'];
 			} else {
-				$ids[] = $id;
+				$ids = [$id];
 			}
             unset($order['groupedIds']);
 
