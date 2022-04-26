@@ -137,7 +137,7 @@ class Orders
 			$order['parcelService'] = sanitize_text_field($_GET['service']);
 		}
 
-		$logs = $this->exportOrders(['nocustomer' => [$order]], time(), true);
+		$logs = $this->exportOrders([$order], time(), true);
 
 		$result = [
 			'snippets' => [
@@ -163,15 +163,11 @@ class Orders
 			$order = new WC_Order($post_id);
 			$orderData = $this->orderRepo->prepareData($order);
 			
-			if($order->get_customer_id()) {
-				if(isset($data['customer'][$order->get_customer_id()])) {
-					$orderData = $this->orderRepo->groupOrders($data['customer'][$order->get_customer_id()], $orderData);
-				}
-				$data['customer'][$order->get_customer_id()] = $orderData;
-			} else {
-				$data['nocustomer'][] = $orderData;
+			$index = $orderData['name'] . '-' . $orderData['city'];
+			if(isset($data[$index])) {
+				$orderData = $this->orderRepo->groupOrders($data[$index], $orderData);
 			}
-
+			$data[$index] = $orderData;
 		}
 
 		if(count($data)) {
@@ -292,17 +288,7 @@ class Orders
 		$logs = [];
 		$prefix = get_option('kika_prefix');
 
-		if(isset($orders['customer']) && isset($orders['nocustomer'])) {
-			$mergedOrders = array_merge($orders['customer'], $orders['nocustomer']);
-		} elseif(isset($orders['nocustomer'])) {
-			$mergedOrders = $orders['nocustomer'];
-		} elseif(isset($orders['customer'])) {
-			$mergedOrders = $orders['customer'];
-		} else {
-			$mergedOrders = [];
-		}
-
-		foreach ($mergedOrders as $order) {
+		foreach ($orders as $order) {
 			$id = $order['id'];
 			$exportId = $prefix ? $prefix . '-' . $id : $id;
 			$order['id'] = $exportId;

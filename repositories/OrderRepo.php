@@ -50,15 +50,11 @@ class OrderRepo
 
 			$orderData = $this->prepareData($order);
 
-			if($order->get_customer_id()) {
-				if(isset($data['customer'][$order->get_customer_id()])) {
-					$orderData = $this->groupOrders($data['customer'][$order->get_customer_id()], $orderData);
-				}
-				$data['customer'][$order->get_customer_id()] = $orderData;
-			} else {
-				$data['nocustomer'][] = $orderData;
-			}		
-
+			$index = $orderData['name'] . '-' . $orderData['city'];
+			if(isset($data[$index])) {
+				$orderData = $this->groupOrders($data[$index], $orderData);
+			}
+			$data[$index] = $orderData;
 		};
 
 		wp_reset_postdata();
