@@ -50,7 +50,7 @@ class OrderRepo
 
 			$orderData = $this->prepareData($order);
 
-			$index = $orderData['name'] . '-' . $orderData['city'];
+			$index = $orderData['name'] . '-' . $orderData['city'] . '-' . $orderData['email'];
 			if(isset($data[$index])) {
 				$orderData = $this->groupOrders($data[$index], $orderData);
 			}

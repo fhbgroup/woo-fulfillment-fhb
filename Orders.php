@@ -163,7 +163,7 @@ class Orders
 			$order = new WC_Order($post_id);
 			$orderData = $this->orderRepo->prepareData($order);
 			
-			$index = $orderData['name'] . '-' . $orderData['city'];
+			$index = $orderData['name'] . '-' . $orderData['city'] . '-' . $orderData['email'];
 			if(isset($data[$index])) {
 				$orderData = $this->orderRepo->groupOrders($data[$index], $orderData);
 			}
