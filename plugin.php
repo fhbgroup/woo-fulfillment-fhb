@@ -8,7 +8,7 @@
  * Plugin Name: Kika API
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
- * Version: 3.11
+ * Version: 3.12
  * Text Domain: woo-fulfillment-fhb
  * Domain Path: /languages
  */
@@ -24,10 +24,6 @@ define('KIKA_PLUGIN_URL', plugin_dir_url( __FILE__));
 register_activation_hook(__FILE__, function() {
 	update_option('kika_method_cod', true);
 	update_option('kika_status_delete', ['wc-cancelled', 'wc-failed']);
-
-    if (!wp_next_scheduled('wp_job_fhb_kika_export_order')) {
-        wp_schedule_event(time() + 3600, 'hourly', 'wp_job_fhb_kika_export_order');
-    }
 });
 
 register_deactivation_hook(__FILE__, function() {
@@ -72,6 +68,7 @@ $restApi = new RestApi($apiId, $secret);
 
 if (get_option('kika_sandbox')) {
 	$restApi->setEndpoint('https://system-dev.fhb.sk/api/v2');
+	//$restApi->setEndpoint('localhost/kika-system/api/v2');
 }
 
 $productApi = new ProductApi($restApi);

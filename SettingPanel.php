@@ -75,6 +75,19 @@ class SettingPanel
 		update_option('kika_ignore_countries', sanitize_text_field($_POST['ignoreCountries']));
 		update_option('kika_status_delete', is_array($_POST['delete']) ? array_map('sanitize_text_field', $_POST['delete']) : null);
 
+		$autoimport = sanitize_text_field($_POST['autoimport']);
+		error_log('autoimport: ' . $autoimport);
+		if($autoimport) {
+		    if (!wp_next_scheduled('wp_job_fhb_kika_export_order')) {
+		        wp_schedule_event(time() + 3600, 'hourly', 'wp_job_fhb_kika_export_order');
+		    }
+		} else {
+		    if (wp_next_scheduled('wp_job_fhb_kika_export_order')) {
+	        	wp_clear_scheduled_hook('wp_job_fhb_kika_export_order');
+		    }
+		}
+		update_option('kika_autoimport', $autoimport);
+
 		$gateways = new WC_Payment_Gateways();
 		foreach($gateways->payment_gateways() as $method) {
 			if($method->enabled !== 'yes') {

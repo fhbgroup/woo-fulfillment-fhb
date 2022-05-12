@@ -32,6 +32,16 @@
 					</label>
 				</td>
 			</tr>
+
+			<tr>
+				<th><label for="autoimport">Autoimport</label></th>
+				<td>
+					<label>
+						<input name="autoimport" type="checkbox" value="1" <?php echo get_option('kika_autoimport') ? 'checked' : '' ?> />
+						Active
+					</label>
+				</td>
+			</tr>
 		</table>
 
 		<h2><?php _e('Orders','woocommerce-fhb-api'); ?></h2>

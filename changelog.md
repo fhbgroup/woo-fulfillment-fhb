@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.12
+- autoimport settings
+
 ## Version 3.1
 - grouping orders from same customer into one (before exporting)
 - var_symbol add prefix
