@@ -76,7 +76,6 @@ class SettingPanel
 		update_option('kika_status_delete', is_array($_POST['delete']) ? array_map('sanitize_text_field', $_POST['delete']) : null);
 
 		$autoimport = sanitize_text_field($_POST['autoimport']);
-		error_log('autoimport: ' . $autoimport);
 		if($autoimport) {
 		    if (!wp_next_scheduled('wp_job_fhb_kika_export_order')) {
 		        wp_schedule_event(time() + 3600, 'hourly', 'wp_job_fhb_kika_export_order');
