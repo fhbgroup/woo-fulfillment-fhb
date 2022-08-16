@@ -8,7 +8,7 @@
  * Plugin Name: Kika API
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
- * Version: 3.12
+ * Version: 3.13
  * Text Domain: woo-fulfillment-fhb
  * Domain Path: /languages
  */
@@ -80,7 +80,7 @@ $parcelServiceRepo = new ParcelServiceRepo($infoApi);
 $orderRepo = new OrderRepo($parcelServiceRepo);
 
 $orders = new Orders($orderApi, $orderRepo, $parcelServiceRepo);
-new Products($productApi, $productRepo);
+new Products($productApi, $productRepo, get_option('kika_sandbox'));
 new SettingPanel($parcelServiceRepo);
 
 

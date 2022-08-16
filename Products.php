@@ -16,11 +16,14 @@ class Products
 	/** @var ProductRepo */
 	private $productRepo;
 
+	private $sandbox = false;
 
-	public function __construct(ProductApi $productApi, ProductRepo $productRepo)
+
+	public function __construct(ProductApi $productApi, ProductRepo $productRepo, $sandbox = false)
 	{
 		$this->productApi = $productApi;
 		$this->productRepo = $productRepo;
+		$this->sandbox = $sandbox;
 		add_action('admin_menu', [$this, 'addMenuItems']);
 		add_action('add_meta_boxes', [$this, 'addMetaBoxes']);
 		add_action('wp_ajax_fhb_kika_export_products', [$this, 'export']);
@@ -152,19 +155,27 @@ class Products
 
 		foreach ($products as $product) {
 
-			update_post_meta($product['product_id'], ProductRepo::EXPORT_KEY, $export);
+			$this->updateProductInfo($product['product_id'], ProductRepo::EXPORT_KEY, $export);
 
 			try {
 				$this->productApi->create($product);
-				update_post_meta($product['product_id'], ProductRepo::STATUS_KEY, ProductRepo::STATUS_SYNCED);
+				$this->updateProductInfo($product['product_id'], ProductRepo::STATUS_KEY, ProductRepo::STATUS_SYNCED);
 
 			} catch (RestApiException $e) {
-				update_post_meta($product['product_id'], ProductRepo::STATUS_KEY, ProductRepo::STATUS_ERROR);
+				$this->updateProductInfo($product['product_id'], ProductRepo::STATUS_KEY, ProductRepo::STATUS_ERROR);
 				$logs[] = $this->createErrorMessage($e, $product);
 			}
 		}
 
 		return $logs;
+	}
+
+
+	private function updateProductInfo($productId, $key, $value)
+	{
+		if(!$this->sandbox) {
+			update_post_meta($productId, $key, $value);
+		}
 	}
 
 }
