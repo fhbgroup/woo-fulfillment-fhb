@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.14
+- added support for new Packeta plugin
+
 ## Version 3.13
 - do not mark product as exported when exporting to DEV
 

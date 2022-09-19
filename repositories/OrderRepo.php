@@ -20,6 +20,7 @@ class OrderRepo
 	const STATUS_DELETED = 'deleted';
 	const STATUS_SKIPPED = 'skipped';
 
+	private $wpdb;
     private $invoice_prefix;
     private $invoice_field;
 	private $productIgnoredPrefix;
@@ -30,6 +31,8 @@ class OrderRepo
 
     public function __construct()
     {
+    	global $wpdb;
+    	$this->wpdb = $wpdb;
         $deliveryMapping = get_option('kika_delivery_service_mapping');
 		$this->deliveryServiceMapping = unserialize($deliveryMapping);
 
@@ -166,20 +169,20 @@ class OrderRepo
 		$addrType = ($order->get_shipping_first_name()) ? 'shipping' : 'billing';
 
 		$name = $order->{'get_'.$addrType.'_first_name'}() . ' ' . $order->{'get_'.$addrType.'_last_name'}();
-		$name = ($order->{$addrType.'_company'}) ? $order->{$addrType.'_company'} . ' - ' . $name : $name;
+		$name = ($order->{'get_'.$addrType.'_company'}()) ? $order->{'get_'.$addrType.'_company'}() . ' - ' . $name : $name;
 
 		$street = $order->{'get_'.$addrType.'_address_1'}();
-		$street .= $order->{$addrType.'_address_2'} ? ', ' . $order->{$addrType.'_address_2'} : '';
-		$street .= $order->{$addrType.'_state'} ? ', ' . $order->{$addrType.'_state'} : '';
+		$street .= $order->{'get_'.$addrType.'_address_2'}() ? ', ' . $order->{'get_'.$addrType.'_address_2'}() : '';
+		$street .= $order->{'get_'.$addrType.'_state'}() ? ', ' . $order->{'get_'.$addrType.'_state'}() : '';
 
         if ($order->{$addrType.'_state'}) { //get state name instead of code
         	$state = WC()->countries->get_states($order->{$addrType.'_country'})[$order->{$addrType.'_state'}];
         	$state = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
-        	$city = $order->{$addrType.'_city'} . ' / ' . $state;
+        	$city = $order->{'get_'.$addrType.'_city'}() . ' / ' . $state;
         	$postcode = $order->{$addrType.'_postcode'} ? $order->{$addrType.'_postcode'} : '00000';
         } else {
         	$city = $order->{'get_'.$addrType.'_city'}();
-        	$postcode = $order->{$addrType.'_postcode'};
+        	$postcode = $order->{'get_'.$addrType.'_postcode'}();
         }
 
         if ($this->invoice_field || $this->invoice_prefix) {
@@ -191,17 +194,19 @@ class OrderRepo
         }
 
         $shippingName = '';
-        $zasilkovna_id = get_post_meta($order->get_id(), 'zasilkovna_id_pobocky', true);
+        
+		$zasilkovna_id = $this->getPacketaPoint($order);
+
         foreach ($order->get_items('shipping') as $item) {
             if($item instanceof WC_Order_Item_Shipping) {
                 $shippingName = $item->get_name();
                 if (!$zasilkovna_id) {
                 	$zasilkovna_id = $item->get_meta('zasilkovna-pickup-point-id');
                 }
-				
                 break;
             }
         }
+
 		if ($zasilkovna_id) {
 			$street .= ' (' . $zasilkovna_id . ')';
 		}
@@ -257,6 +262,29 @@ class OrderRepo
 		$order1['groupedIds'] = array_unique($order1['groupedIds']);
 
 		return $order1;
+	}
+
+
+	public function getPacketaPoint(WC_Order $order)
+	{
+		$zasilkovna_id = null;
+
+		// https://github.com/Zasilkovna/WooCommerce/issues/269
+        if (in_array( 'packeta/packeta.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    		$packetaTable = $this->wpdb->prefix.'packetery_order';
+			$sql = $this->wpdb->prepare("SELECT * FROM $packetaTable WHERE id = %s;", $order->get_id());
+			$results = $this->wpdb->get_results($sql);
+
+			foreach($results as $packetaOrder){
+		    	$zasilkovna_id =  $packetaOrder->point_id;
+			}
+		}
+
+		if($zasilkovna_id) return $zasilkovna_id;
+
+		$zasilkovna_id = get_post_meta($order->get_id(), 'zasilkovna_id_pobocky', true);
+
+		return $zasilkovna_id;
 	}
 
 }
