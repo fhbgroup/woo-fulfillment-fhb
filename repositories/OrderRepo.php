@@ -15,6 +15,9 @@ class OrderRepo
 	const EXPORT_KEY = 'fhb-api-export';
 	const API_ID_KEY = 'fhb-api-id';
 	const TOKEN_KEY = 'fhb-api-token';
+	const TRACKING_NUMBER_KEY = 'fhb-api-tracking-number';
+	const TRACKING_LINK_KEY = 'fhb-api-tracking-link';
+	const CARRIER_KEY = 'fhb-api-carrier';
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
 	const STATUS_DELETED = 'deleted';
@@ -226,6 +229,7 @@ class OrderRepo
 			'invoiceLink' => isset($invoiceLink) ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->get_payment_method()) ? $order->get_total() : 0,
 			'parcelService' => $deliveryService,
+			'note' => sprintf("WC carrier name: %s", $shippingName),
 		];
 
 		$items = $order->get_items();

@@ -257,17 +257,34 @@ class Orders
 
 					$msg = __('Order was sent with tracking number ', 'woocommerce-fhb-api');
 					if(isset($kikaOrder->_embedded->trackingLink)) {
+						$trackingLinks = [];
 						foreach ($trackings  as $i => $track) {
-							$msg .= ' <a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
-						}
+							$link = '<a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
+							$msg .= ' ' . $link;
+							$trackingLinks[] = $link;
+ 						}
 
 					} else {
-						$msg .= implode($trackings, ',');
+						$msg .= implode(',', $trackings);
 					}
 
 					$msg .= ".";
 
 					$order->add_order_note($msg, true);
+
+					update_post_meta($order->get_id(), OrderRepo::TRACKING_NUMBER_KEY, implode(',', $trackings));
+					
+					$parcelServices = $this->parcelServiceRepo->fetch();
+					$assocParcelServices = array_combine(array_column($parcelServices, 'code'), array_column($parcelServices, 'name'));
+
+					if(isset($assocParcelServices[$kikaOrder->parcelService])) {
+						update_post_meta($order->get_id(), OrderRepo::CARRIER_KEY, $assocParcelServices[$kikaOrder->parcelService]);
+					}
+					
+					if(isset($trackingLinks)) {
+						update_post_meta($order->get_id(), OrderRepo::TRACKING_LINK_KEY, implode(',', $trackingLinks));
+					}
+
 				}
 			}
 
