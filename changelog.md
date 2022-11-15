@@ -4,7 +4,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 ## History of changes
 
 ## Version 3.15
-- saving trackingNumber, trackingLinks and carrier name to order meta data after sending (fields fhb-api-tracking-number, fhb-api-tracking-link, fhb-api-carrier)
+- saving trackingNumber, trackingLinks and carrier name to order meta data after sending (fields _fhb-api-tracking-number, _fhb-api-tracking-link, _fhb-api-carrier)
 
 ## Version 3.14
 - added support for new Packeta plugin

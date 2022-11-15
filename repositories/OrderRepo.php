@@ -15,9 +15,9 @@ class OrderRepo
 	const EXPORT_KEY = 'fhb-api-export';
 	const API_ID_KEY = 'fhb-api-id';
 	const TOKEN_KEY = 'fhb-api-token';
-	const TRACKING_NUMBER_KEY = 'fhb-api-tracking-number';
-	const TRACKING_LINK_KEY = 'fhb-api-tracking-link';
-	const CARRIER_KEY = 'fhb-api-carrier';
+	const TRACKING_NUMBER_KEY = '_fhb-api-tracking-number';
+	const TRACKING_LINK_KEY = '_fhb-api-tracking-link';
+	const CARRIER_KEY = '_fhb-api-carrier';
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
 	const STATUS_DELETED = 'deleted';

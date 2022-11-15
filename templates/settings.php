@@ -8,7 +8,7 @@
 
 		<h2><?php _e('Connection','woocommerce-fhb-api'); ?></h2>
 
-		<p><?php _e('You can generate login credentials ','woocommerce-fhb-api'); ?> <a href="https://system.fhb.sk/zoe/api/"><?php _e('here','woocommerce-fhb-api'); ?></a>.</p>
+		<p><?php _e('You can generate login credentials ','woocommerce-fhb-api'); ?> <a href="https://zoe2.fhb.sk/api"><?php _e('here','woocommerce-fhb-api'); ?></a>.</p>
 
 		<?php wp_nonce_field('kika-api-verify'); ?>
 
