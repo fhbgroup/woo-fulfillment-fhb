@@ -227,9 +227,9 @@ class OrderRepo
 			'psc' => $postcode,
 			'phone' => $order->get_billing_phone() ? $order->get_billing_phone() : null,
 			'invoiceLink' => isset($invoiceLink) ? $invoiceLink : '',
-			'cod' => get_option('kika_method_' . $order->get_payment_method()) ? $order->get_total() : 0,
+			'cod' => get_option('kika_method_' . $order->get_payment_method()) ? (float) $order->get_total() : 0,
 			'parcelService' => $deliveryService,
-			'note' => sprintf("WC carrier name: %s", $shippingName),
+			'note' => sprintf("WC carrier name: %s, order total: %.2f", $shippingName, $order->get_total()),
 		];
 
 		$items = $order->get_items();
