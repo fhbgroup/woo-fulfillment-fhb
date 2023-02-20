@@ -229,7 +229,7 @@ class OrderRepo
 			'invoiceLink' => isset($invoiceLink) ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->get_payment_method()) ? (float) $order->get_total() : 0,
 			'parcelService' => $deliveryService,
-			'note' => sprintf("WC carrier name: %s, order total: %.2f", $shippingName, $order->get_total()),
+			'note' => '',
 		];
 
 		$items = $order->get_items();
