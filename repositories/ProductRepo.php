@@ -15,6 +15,7 @@ class ProductRepo
 	const EXPORT_KEY = 'fhb-api-export';
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
+    const AUTOEXPORT_KEY = 'fhb-autoexport';
 
 
 	public function fetch($args)
@@ -295,5 +296,43 @@ class ProductRepo
 			'photoUrl' => wp_get_attachment_url($product->get_image_id())
 		];
 	}
+
+
+
+    public function getAutoDisabledProducts()
+    {
+        $products = [];
+        
+        $args = [ // fetchSimpleForExport arg
+            'post_type'   => 'product',
+            //'posts_per_page' => 200,
+            'post_status' => 'publish',
+            'tax_query' => [
+                [
+                    'taxonomy' => 'product_type',
+                    'field' => 'slug',
+                    'terms' => 'simple',
+                ]
+            ]
+        ];
+
+
+        $loop = new WP_Query($args);
+
+        while ($loop->have_posts()) {
+            $loop->the_post();
+            global $product;
+            // if is disabled, add it to the list
+            $status = get_post_meta($product->get_id(), self::AUTOEXPORT_KEY, true);
+            if($status == "disabled") {
+                $products[] = $product->get_sku();
+            }
+        };
+
+        wp_reset_postdata();        
+
+        return $products;
+    }
+
 
 }

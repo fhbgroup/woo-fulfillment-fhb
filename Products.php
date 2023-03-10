@@ -178,4 +178,12 @@ class Products
 		}
 	}
 
+
+    public function setAutoExport($post_ids, $value)
+    {
+        foreach ($post_ids as $post_id) {
+            update_post_meta($post_id, ProductRepo::AUTOEXPORT_KEY, $value);
+        }
+    }
+
 }

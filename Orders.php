@@ -6,6 +6,7 @@ use Kika\Api\OrderApi;
 use Kika\Api\RestApiException;
 use Kika\Repositories\OrderRepo;
 use Kika\Repositories\ParcelServiceRepo;
+use Kika\Repositories\ProductRepo;
 use WC_Order;
 
 
@@ -21,15 +22,20 @@ class Orders
 	/** @var ParcelServiceRepo */
 	private $parcelServiceRepo;
 
+    /** @var ProductRepo */
+    private $productRepo;
+
+
     /** @var array */
     private $ignoreCountries;
 
 
-	public function __construct(OrderApi $orderApi, OrderRepo $orderRepo, ParcelServiceRepo $parcelServiceRepo)
+	public function __construct(OrderApi $orderApi, OrderRepo $orderRepo, ParcelServiceRepo $parcelServiceRepo, ProductRepo $productRepo)
 	{
 		$this->orderApi = $orderApi;
 		$this->orderRepo = $orderRepo;
 		$this->parcelServiceRepo = $parcelServiceRepo;
+		$this->productRepo = $productRepo;
 		$this->ignoreCountries = explode(',', strtolower(get_option('kika_ignore_countries', null)));
 
 		add_action('admin_menu', [$this, 'addMenuItems']);
@@ -110,14 +116,16 @@ class Orders
 	}
 
 
-    public function jobExport()
+    public function jobExport($die = true)
     {
         set_time_limit(0);
         $export = time();
         $orders = $this->orderRepo->fetchForExport($export, 200);
 
         $this->exportOrders($orders, $export);
-        wp_die();
+        if($die) {
+        	wp_die();
+        }
     }
 
 
@@ -137,7 +145,7 @@ class Orders
 			$order['parcelService'] = sanitize_text_field($_GET['service']);
 		}
 
-		$logs = $this->exportOrders([$order], time(), true);
+		$logs = $this->exportOrders([$order], time(), true, false);
 
 		$result = [
 			'snippets' => [
@@ -171,7 +179,7 @@ class Orders
 		}
 
 		if(count($data)) {
-			$this->exportOrders($data, time());
+			$this->exportOrders($data, time(), false, false);
 		}		
 	}
 
@@ -300,10 +308,14 @@ class Orders
 	}
 
 
-	private function exportOrders($orders, $export, $single = false)
+	private function exportOrders($orders, $export, $single = false, $checkAutoProducts = true)
 	{
 		$logs = [];
 		$prefix = get_option('kika_prefix');
+
+		if($checkAutoProducts) {
+			$disabledProducts = $this->productRepo->getAutoDisabledProducts();
+		}
 
 		foreach ($orders as $order) {
 			$id = $order['id'];
@@ -351,6 +363,13 @@ class Orders
             	continue;
             }
 
+                        
+            if($checkAutoProducts && $this->containDisabledProduct($order['_embedded']['items'], $disabledProducts)) {
+                $this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SKIPPED);
+                $logs[] = '<span class="log-error">Order contains some auto disabled products, order skipped.</span>';
+                continue;
+            }
+
 
 			try {
 				$this->orderApi->create($order);
@@ -367,6 +386,18 @@ class Orders
 
 		return $logs;
 	}
+
+
+	private function containDisabledProduct($products, $disabledProducts)
+    {
+        foreach ($products as $product) {
+            if(in_array($product['id'], $disabledProducts)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 	private function createStats()
 	{

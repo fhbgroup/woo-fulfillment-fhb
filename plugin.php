@@ -13,6 +13,10 @@
  * Domain Path: /languages
  */
 
+// Approve products - possibility to set product "autoexport" property (allowed / disabled)
+// when disabled, order will not be exported automatically - status skipped will be set to order
+// orders with disabled products can be exported manually, or by bulk export action (on order overview page)
+
 // If this file is called directly, abort.
 if (!function_exists('add_action')) {
 	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
@@ -79,8 +83,8 @@ $productRepo = new ProductRepo();
 $parcelServiceRepo = new ParcelServiceRepo($infoApi);
 $orderRepo = new OrderRepo($parcelServiceRepo);
 
-$orders = new Orders($orderApi, $orderRepo, $parcelServiceRepo);
-new Products($productApi, $productRepo, get_option('kika_sandbox'));
+$orders = new Orders($orderApi, $orderRepo, $parcelServiceRepo, $productRepo);
+$products = new Products($productApi, $productRepo, get_option('kika_sandbox'));
 new SettingPanel($parcelServiceRepo);
 
 
@@ -96,18 +100,54 @@ add_filter( 'manage_edit-shop_order_columns', function($columns) {
 }, 20);
 
 
+add_filter( 'manage_edit-product_columns', function($columns) {
+    $columns[ProductRepo::AUTOEXPORT_KEY] = 'FHB Autoexport';
+    return $columns;
+}, 20);
+
 add_filter('bulk_actions-edit-shop_order', function($actions) {
 	$actions['fhb-bulk-export'] = "FHB Bulk export";
+	$actions['fhb-export-job'] = "FHB Export job";
 	return $actions;
 }, 20, 1);
 
 
 add_filter('handle_bulk_actions-edit-shop_order', function($redirect_to, $action, $post_ids) use ($orders) {
-	if($action != 'fhb-bulk-export') {
+	if($action != 'fhb-bulk-export' && $action != 'fhb-export-job') {
+		return $redirect_to;
+	}
+	if($action == "fhb-bulk-export"){
+		$orders->bulkExport($post_ids);
+	} elseif($action == "fhb-export-job") {
+		$orders->jobExport(false);
+	}
+
+	return $redirect_to;
+}, 20, 3);
+
+
+add_filter('bulk_actions-edit-product', function($actions) {
+	$actions['fhb-auto-export-true'] = "FHB Autoexport Allow";
+	$actions['fhb-auto-export-false'] = "FHB Autoexport Disable";
+	//$actions['fhb-auto-export-get'] = "FHB Autoexport GET"; // debugging
+	return $actions;
+}, 20, 1);
+
+
+add_filter('handle_bulk_actions-edit-product', function($redirect_to, $action, $post_ids) use ($products, $productRepo) {
+	if($action != 'fhb-auto-export-true' && $action != 'fhb-auto-export-false' && $action != 'fhb-auto-export-get') {
 		return $redirect_to;
 	}
 
-	$orders->bulkExport($post_ids);
+	if($action == 'fhb-auto-export-true') {
+		$products->setAutoExport($post_ids, "allowed");
+	} elseif($action == 'fhb-auto-export-false') {
+		$products->setAutoExport($post_ids, "disabled");
+	} elseif($action == 'fhb-auto-export-get') { // debugging only
+		$prods = $productRepo->getAutoDisabledProducts();
+		error_log("disabled products");
+		error_log(serialize($prods));
+	}
 
 	return $redirect_to;
 }, 20, 3);
@@ -115,6 +155,13 @@ add_filter('handle_bulk_actions-edit-shop_order', function($redirect_to, $action
 
 add_action('manage_shop_order_posts_custom_column', function($column, $post_id) {
 	echo get_post_meta($post_id, $column, true);
+}, 10, 2);
+
+
+add_action('manage_product_posts_custom_column', function($column, $post_id) {
+    if($column == ProductRepo::AUTOEXPORT_KEY) {
+        echo get_post_meta($post_id, $column, true);
+    }
 }, 10, 2);
 
 
