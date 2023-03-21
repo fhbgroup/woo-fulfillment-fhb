@@ -8,7 +8,7 @@
  * Plugin Name: FHB Kika API - Approve products
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integration for FHB fulfillment system - Approve products
- * Version: 3.15XX
+ * Version: 3.16XX
  * Text Domain: woo-fulfillment-fhb
  * Domain Path: /languages
  */

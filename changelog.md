@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.16
+- InPost delivery point support
+
 ## Version 3.15
 - saving trackingNumber, trackingLinks and carrier name to order meta data after sending (fields _fhb-api-tracking-number, _fhb-api-tracking-link, _fhb-api-carrier)
 
