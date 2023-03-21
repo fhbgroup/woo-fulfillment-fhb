@@ -198,20 +198,24 @@ class OrderRepo
 
         $shippingName = '';
         
-		$zasilkovna_id = $this->getPacketaPoint($order);
+		$deliveryPoint = $this->getPacketaPoint($order);
 
         foreach ($order->get_items('shipping') as $item) {
             if($item instanceof WC_Order_Item_Shipping) {
                 $shippingName = $item->get_name();
-                if (!$zasilkovna_id) {
-                	$zasilkovna_id = $item->get_meta('zasilkovna-pickup-point-id');
+                if (!$deliveryPoint) {
+                	$deliveryPoint = $item->get_meta('zasilkovna-pickup-point-id');
                 }
                 break;
             }
         }
 
-		if ($zasilkovna_id) {
-			$street .= ' (' . $zasilkovna_id . ')';
+        if(!$deliveryPoint) {
+        	$deliveryPoint = $this->getInPostPoint($order);
+        }
+
+		if ($deliveryPoint) {
+			$street .= ' (' . $deliveryPoint . ')';
 		}
 
         $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
@@ -289,6 +293,12 @@ class OrderRepo
 		$zasilkovna_id = get_post_meta($order->get_id(), 'zasilkovna_id_pobocky', true);
 
 		return $zasilkovna_id;
+	}
+
+
+	public function getInPostPoint(WC_Order $order)
+	{
+		return get_post_meta($order->get_id(), 'paczkomat_key', true);
 	}
 
 }
