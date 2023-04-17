@@ -309,7 +309,7 @@ class Orders
 			$id = $order['id'];
 			$exportId = $prefix ? $prefix . '-' . $id : $id;
 			$order['id'] = $exportId;
-			$order['variableSymbol'] = $prefix ? $prefix . '-' . $order['variableSymbol'] : $order['variableSymbol'];
+			$order['variableSymbol'] = $prefix ? $prefix . $order['variableSymbol'] : $order['variableSymbol'];
 
 
 			if(isset($order['groupedIds'])) {

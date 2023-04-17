@@ -2,6 +2,8 @@
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
+## Version 3.17
+- var_symbol prefix - removed dash
 
 ## Version 3.16
 - InPost delivery point support
