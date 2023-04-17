@@ -307,7 +307,7 @@ class Orders
 
 		foreach ($orders as $order) {
 			$id = $order['id'];
-			$exportId = $prefix ? $prefix . '-' . $id : $id;
+			$exportId = $prefix ? $prefix . $id : $id;
 			$order['id'] = $exportId;
 			$order['variableSymbol'] = $prefix ? $prefix . $order['variableSymbol'] : $order['variableSymbol'];
 
