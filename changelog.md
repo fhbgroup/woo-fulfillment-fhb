@@ -2,6 +2,9 @@
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
+## Version 3.18
+- open settings refresh available carriers
+
 ## Version 3.17
 - var_symbol prefix - removed dash
 

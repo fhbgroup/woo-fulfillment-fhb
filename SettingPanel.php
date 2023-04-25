@@ -30,7 +30,7 @@ class SettingPanel
 	public function render()
 	{
 		$statuses = wc_get_order_statuses();
-		$services = $this->parcelServiceRepo->fetch();
+		$services = $this->parcelServiceRepo->fetch(true);
 
 		$gateways = new WC_Payment_Gateways();
 		$methods = [];
