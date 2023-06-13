@@ -304,12 +304,13 @@ class Orders
 	{
 		$logs = [];
 		$prefix = get_option('kika_prefix');
+		$prefixToVariable = get_option('kika_prefix_to_variable');
 
 		foreach ($orders as $order) {
 			$id = $order['id'];
 			$exportId = $prefix ? $prefix . $id : $id;
 			$order['id'] = $exportId;
-			$order['variableSymbol'] = $prefix ? $prefix . $order['variableSymbol'] : $order['variableSymbol'];
+			$order['variableSymbol'] = ($prefixToVariable && $prefix) ? $prefix . $order['variableSymbol'] : $order['variableSymbol'];
 
 
 			if(isset($order['groupedIds'])) {

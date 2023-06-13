@@ -62,8 +62,18 @@
 			</tr>
 
 			<tr>
-				<th><label for="secret">API Id prefix</label></th>
-				<td><input name="prefix" type="text" id="secret" value="<?php echo get_option('kika_prefix') ?>" class="regular-text" maxlength="4" /></td>
+				<th><label for="prefix">API ID prefix</label></th>
+				<td><input name="prefix" type="text" id="prefix" value="<?php echo get_option('kika_prefix') ?>" class="regular-text" maxlength="4" /></td>
+			</tr>
+
+			<tr>
+				<th><label for="prefixToVariable">API ID prefix to VariableSymbol</label></th>
+				<td>
+					<label>
+						<input name="prefixToVariable" type="checkbox" value="1" <?php echo get_option('kika_prefix_to_variable') ? 'checked' : '' ?> />
+						Active
+					</label>
+				</td>
 			</tr>
 
 			<tr>

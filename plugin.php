@@ -8,7 +8,7 @@
  * Plugin Name: Kika API
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
- * Version: 3.18
+ * Version: 3.19
  * Text Domain: woo-fulfillment-fhb
  * Domain Path: /languages
  */
