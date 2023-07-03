@@ -218,7 +218,8 @@ class OrderRepo
 			$street .= ' (' . $deliveryPoint . ')';
 		}
 
-        $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
+        //$deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
+        $deliveryService = $this->getMappedDeliveryService($shippingName) ?: get_option('kika_service', null);
 
         $data = [
 			'id' => $order->get_id(),
@@ -299,6 +300,17 @@ class OrderRepo
 	public function getInPostPoint(WC_Order $order)
 	{
 		return get_post_meta($order->get_id(), 'paczkomat_key', true);
+	}
+
+	
+	public function getMappedDeliveryService($shippingName)
+	{
+		foreach ($this->deliveryServiceMapping as $mapName => $deliveryServiceId) {
+			if(strpos($shippingName, $mapName) !== false) {
+				return $deliveryServiceId;
+			}
+		}
+		return false;
 	}
 
 }

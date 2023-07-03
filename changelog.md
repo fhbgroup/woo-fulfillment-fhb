@@ -2,6 +2,9 @@
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
+## Version 3.20
+- Carrier mapping contains name
+
 ## Version 3.19
 - API id into variable symbol setting
 
