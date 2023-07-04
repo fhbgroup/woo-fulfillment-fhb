@@ -4,6 +4,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 ## History of changes
 ## Version 3.20
 - Carrier mapping contains name
+- notify process - change status at last (when trackingNumber, trackingLinks and carrier name are filled)
 
 ## Version 3.19
 - API id into variable symbol setting

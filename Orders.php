@@ -236,11 +236,6 @@ class Orders
 
 				$order = wc_get_order($orderId);
 
-
-				if ($order and $status) {
-					$order->update_status($status, '', true);
-				}
-
 				if($type == 'sent') {
 					$trackingUrls = [];
 					$kikaOrder = $this->getOrder($orderId);
@@ -285,6 +280,10 @@ class Orders
 						update_post_meta($order->get_id(), OrderRepo::TRACKING_LINK_KEY, implode(',', $trackingLinks));
 					}
 
+				}
+
+				if ($order and $status) {
+					$order->update_status($status, '', true);
 				}
 			}
 
