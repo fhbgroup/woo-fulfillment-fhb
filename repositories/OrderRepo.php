@@ -15,6 +15,7 @@ class OrderRepo
 	const EXPORT_KEY = 'fhb-api-export';
 	const API_ID_KEY = 'fhb-api-id';
 	const TOKEN_KEY = 'fhb-api-token';
+	const WOO_CARRIER_KEY = 'fhb-woo-carrier';
 	const TRACKING_NUMBER_KEY = '_fhb-api-tracking-number';
 	const TRACKING_LINK_KEY = '_fhb-api-tracking-link';
 	const CARRIER_KEY = '_fhb-api-carrier';
@@ -218,8 +219,9 @@ class OrderRepo
 			$street .= ' (' . $deliveryPoint . ')';
 		}
 
-        //$deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
-        $deliveryService = $this->getMappedDeliveryService($shippingName) ?: get_option('kika_service', null);
+        $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
+        //$deliveryService = $this->getMappedDeliveryService($shippingName) ?: get_option('kika_service', null);
+        update_post_meta($order->get_id(), self::WOO_CARRIER_KEY, $shippingName);
 
         $data = [
 			'id' => $order->get_id(),
