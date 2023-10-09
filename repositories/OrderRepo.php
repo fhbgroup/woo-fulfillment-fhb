@@ -85,7 +85,7 @@ class OrderRepo
 
 			'date_query' => [
 				'before' => '-10 minutes',
-				'after' => '-2 days',
+				'after' => '-14 days',
 			],
 
 			'meta_query' => [
