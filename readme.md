@@ -5,6 +5,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## Contents
   - [Instalation](#instalation)
+  - [HPOS compatibility](#HPOS)
   - [Settings](#settings)
   	- [Connection](#connection)
   	- [Orders](#orders)
@@ -24,6 +25,15 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 - after activation, new item appears in menu, named FHB Kika API
 
 ![](images/menu.en.png)
+
+### High-Performance Order Storage (HPOS) Compatibility
+From WooCommerce 8.2, released on October 2023, High-Performance Order Storage (HPOS) is officially flagged as stable and will be enabled by default for new installations.
+
+Compatibility must be enabled for the plugin to work.
+
+More details available [HERE](https://woo.com/document/high-performance-order-storage/!)
+
+![](images/hpos-compatibility.jpg)
 
 ### Settings
 

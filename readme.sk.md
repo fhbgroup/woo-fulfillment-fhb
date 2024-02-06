@@ -5,6 +5,7 @@ Read this in [English](readme.md)
 
 ## Obsah
   - [Inštalácia](#inštalácia)
+  - [HPOS kompatibilita](#HPOS)
   - [Nastavenie](#nastavenie)
   	- [Autorizácia](#autorizácia)
   	- [Objednávky](#objednávky)
@@ -26,6 +27,15 @@ Read this in [English](readme.md)
 - po aktivácii sa v menu objaví nová položka FHB Kika API
 
 ![](images/menu.png)
+
+### High-Performance Order Storage (HPOS) Kompatibilita
+Od WooCommerce 8.2, vydaného v Októbri 2023, High-Performance Order Storage (HPOS) je oficlálne označený ako stable a bude defaultne povolený v nových inštaláciách.
+
+Kompatibilný mód musí byť povolený pre správne fungovanie pluginu.
+
+Viac informácii [TU](https://woo.com/document/high-performance-order-storage/!)
+
+![](images/hpos-compatibility.jpg)
 
 ### Nastavenie
  - nasledovná sekcia obsahuje popis nastavení pluginu pre správnu funkčnosť
