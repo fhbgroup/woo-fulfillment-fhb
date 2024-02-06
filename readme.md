@@ -5,7 +5,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## Contents
   - [Instalation](#instalation)
-  - [HPOS compatibility](#HPOS)
+  - [HPOS compatibility](#high-performance-order-storage-hpos-compatibility)
   - [Settings](#settings)
   	- [Connection](#connection)
   	- [Orders](#orders)
