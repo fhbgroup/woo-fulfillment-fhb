@@ -2,6 +2,9 @@
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
+## Version 3.23
+- Retrieves delivery point code from custom field _fhb-delivery-point-code
+
 ## Version 3.22
 - Automatic export - selecting orders created in last 14 days (previously 2 days)
 

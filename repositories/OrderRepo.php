@@ -19,6 +19,7 @@ class OrderRepo
 	const TRACKING_NUMBER_KEY = '_fhb-api-tracking-number';
 	const TRACKING_LINK_KEY = '_fhb-api-tracking-link';
 	const CARRIER_KEY = '_fhb-api-carrier';
+	const DELIVERY_POINT_CODE_KEY = '_fhb-delivery-point-code';
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
 	const STATUS_DELETED = 'deleted';
@@ -215,6 +216,10 @@ class OrderRepo
         	$deliveryPoint = $this->getInPostPoint($order);
         }
 
+        if(!$deliveryPoint) {
+        	$deliveryPoint = $this->getCustomPoint($order);
+        }
+
 		if ($deliveryPoint) {
 			$street .= ' (' . $deliveryPoint . ')';
 		}
@@ -302,6 +307,12 @@ class OrderRepo
 	public function getInPostPoint(WC_Order $order)
 	{
 		return get_post_meta($order->get_id(), 'paczkomat_key', true);
+	}
+
+
+	public function getCustomPoint(WC_Order $order)
+	{
+		return get_post_meta($order->get_id(), self::DELIVERY_POINT_CODE_KEY, true);
 	}
 
 	
