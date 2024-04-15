@@ -66,6 +66,10 @@ class Orders
 		$exported = get_post_meta($post_id, OrderRepo::STATUS_KEY, true) == OrderRepo::STATUS_SYNCED;
 		$order = wc_get_order($post_id);
 		$services = $this->parcelServiceRepo->fetch();
+        $fhbApiId = get_post_meta($post_id, OrderRepo::API_ID_KEY, true);
+        $fhbApiExport = get_post_meta($post_id, OrderRepo::EXPORT_KEY, true);
+        $fhbApiStatus = get_post_meta($post_id, OrderRepo::STATUS_KEY, true);
+        $fhbApiError = get_post_meta($post_id, OrderRepo::ERROR_KEY, true);
 		require 'templates/orderBox.php';
 	}
 
@@ -113,10 +117,17 @@ class Orders
     public function jobExport()
     {
         set_time_limit(0);
-        $export = time();
-        $orders = $this->orderRepo->fetchForExport($export, 200);
+        try {
+	        $export = time();
+	        $orders = $this->orderRepo->fetchForExport($export, 200);
+        	$this->exportOrders($orders, $export);
 
-        $this->exportOrders($orders, $export);
+        } catch (\Exception $e) {
+        	error_log(
+        		sprintf("FHB job error: %s", $e->getMessage())
+        	);
+        }
+
         wp_die();
     }
 
@@ -362,6 +373,10 @@ class Orders
 				$this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
 				$this->bulk_update_post_meta($ids, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
 				$logs[] = $this->createErrorMessage($e, $order, $single);
+			} catch (\Exception $e) {
+				error_log(
+					sprintf("FHB Plugin error, orderId %s : %s", implode(',', $ids), $e->getMessage())
+				);
 			}
 		}
 

@@ -2,6 +2,11 @@
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
+
+## Version 3.24 - 2024-04-15
+- Order detail box - show fhb specific order attributes
+- Cron job err handling - improve job stability
+
 ## Version 3.23
 - Retrieves delivery point code from custom field _fhb-delivery-point-code
 
