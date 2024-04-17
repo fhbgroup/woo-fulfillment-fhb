@@ -1,4 +1,4 @@
-# Fullfilment by FHB - woocommerce plugin (version 3.24)
+# Fullfilment by FHB - woocommerce plugin (version 3.25)
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 Čítaj tiež po [Slovensky](readme.sk.md)
@@ -49,6 +49,7 @@ More details available [HERE](https://woo.com/document/high-performance-order-st
 - Prefix API Id - prefix for order ID, necessary to fill with different values if multiple plugins are connected to the same ZOE account
 - Ignore product prefix - products whose SKU starts with this string will be ignored
 - Ignored countries - comma separated list of country codes that will be ignored
+- Group orders - all orders with the same name, city and email withing the same export are merged together
 
 #### Mapping of statuses
 Changes woocommerce order status when order change happen in fullfilment center.

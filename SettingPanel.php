@@ -72,6 +72,7 @@ class SettingPanel
 		update_option('kika_sandbox', sanitize_text_field($_POST['sandbox']));
 		update_option('kika_prefix', sanitize_text_field($_POST['prefix']));
 		update_option('kika_prefix_to_variable', $_POST['prefixToVariable']);
+		update_option('kika_group_orders', $_POST['groupOrders']);
 		update_option('kika_ignore_product_prefix', sanitize_text_field($_POST['ignoreProductPrefix']));
 		update_option('kika_ignore_countries', sanitize_text_field($_POST['ignoreCountries']));
 		update_option('kika_status_delete', is_array($_POST['delete']) ? array_map('sanitize_text_field', $_POST['delete']) : null);

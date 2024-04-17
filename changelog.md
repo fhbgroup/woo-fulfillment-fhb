@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.25 - 2024-04-17
+- Order group feature - checkbox to activate in setting
+
 ## Version 3.24 - 2024-04-15
 - Order detail box - show fhb specific order attributes
 - Cron job err handling - improve job stability

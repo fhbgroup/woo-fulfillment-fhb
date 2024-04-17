@@ -1,4 +1,4 @@
-# Fullfilment by FHB - woocommerce plugin (verzia 3.24)
+# Fullfilment by FHB - woocommerce plugin (verzia 3.25)
 Plugin slúžiaci na prepojenie s woocommerce s fullfilment systémom ZOE
 
 Read this in [English](readme.md)
@@ -53,6 +53,7 @@ Viac informácii [TU](https://woo.com/document/high-performance-order-storage/!)
 - Prefix API Id - prefix k ID objednávky, nutné vyplniť rôznymi hodnotamiu ak sa používa vo viacerých eshopoch
 - Prefix ignorovaného produktu - produkty, ktorých kód (SKU) začína na nastavený reťazec, budú ignorované
 - Ignorované krajiny - čiarkou oddelený zoznam kódov krajín, ktoré budú ignorované
+- Zlučovanie objednávok - všetky objednávky s rovnakým menom, emailom a mestom vrámci jedného exportu sú zlúčené dohromady
 
 #### Mapovanie statusov
 Slúži na zmenu statusu objednávky keď sa zmení stav objednávky vo fullfilment centre.

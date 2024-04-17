@@ -24,6 +24,9 @@ class Orders
     /** @var array */
     private $ignoreCountries;
 
+    /** @var boolean */
+    private $groupOrders;
+
 
 	public function __construct(OrderApi $orderApi, OrderRepo $orderRepo, ParcelServiceRepo $parcelServiceRepo)
 	{
@@ -31,6 +34,7 @@ class Orders
 		$this->orderRepo = $orderRepo;
 		$this->parcelServiceRepo = $parcelServiceRepo;
 		$this->ignoreCountries = explode(',', strtolower(get_option('kika_ignore_countries', null)));
+		$this->groupOrders = get_option('kika_group_orders');
 
 		add_action('admin_menu', [$this, 'addMenuItems']);
 		add_action('add_meta_boxes', [$this, 'addMetaBoxes']);
@@ -174,6 +178,11 @@ class Orders
 			$order = new WC_Order($post_id);
 			$orderData = $this->orderRepo->prepareData($order);
 			
+			if(!$this->groupOrders) {
+				$data[] = $orderData;
+				continue;
+			}
+
 			$index = $orderData['name'] . '-' . $orderData['city'] . '-' . $orderData['email'];
 			if(isset($data[$index])) {
 				$orderData = $this->orderRepo->groupOrders($data[$index], $orderData);

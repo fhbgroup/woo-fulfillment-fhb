@@ -33,6 +33,9 @@ class OrderRepo
     /** @var array */
     private $deliveryServiceMapping;
 
+    /** @var boolean */
+    private $groupOrders;
+
 
     public function __construct()
     {
@@ -44,6 +47,7 @@ class OrderRepo
         $this->invoice_prefix = get_option('kika_invoice_prefix', null);
         $this->invoice_field = get_option('kika_invoice_field', null);
         $this->productIgnoredPrefix = get_option('kika_ignore_product_prefix', null);
+		$this->groupOrders = get_option('kika_group_orders');
     }
 
 
@@ -57,6 +61,11 @@ class OrderRepo
 			$order = new WC_Order(get_the_ID());
 
 			$orderData = $this->prepareData($order);
+
+			if(!$this->groupOrders) {
+				$data[] = $orderData;
+				continue;
+			}
 
 			$index = $orderData['name'] . '-' . $orderData['city'] . '-' . $orderData['email'];
 			if(isset($data[$index])) {
@@ -234,7 +243,7 @@ class OrderRepo
 			'name' => $name,
 			'email' => $order->get_billing_email(),
 			'street' => $street,
-			'country' => mb_strtolower($order->{$addrType.'_country'}),
+			'country' => mb_strtolower($order->{'get_'.$addrType.'_country'}()),
 			'city' => $city,
 			'psc' => $postcode,
 			'phone' => $order->get_billing_phone() ? $order->get_billing_phone() : null,

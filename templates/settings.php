@@ -77,6 +77,16 @@
 			</tr>
 
 			<tr>
+				<th><label for="groupOrders"><?php _e('Group orders'); ?></label></th>
+				<td>
+					<label>
+						<input name="groupOrders" type="checkbox" value="1" <?php echo get_option('kika_group_orders') ? 'checked' : '' ?> />
+						Active
+					</label>
+				</td>
+			</tr>
+
+			<tr>
 				<th><label for="ignoreProductPrefix"><?php _e('Ignore product prefix','woocommerce-fhb-api'); ?></label></th>
 				<td><input id="ignoreProductPrefix" type="text" name="ignoreProductPrefix" value="<?php echo get_option('kika_ignore_product_prefix') ?>" /></td>
 			</tr>
