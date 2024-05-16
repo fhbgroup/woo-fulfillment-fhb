@@ -15,9 +15,11 @@ class OrderRepo
 	const EXPORT_KEY = 'fhb-api-export';
 	const API_ID_KEY = 'fhb-api-id';
 	const TOKEN_KEY = 'fhb-api-token';
+	const WOO_CARRIER_KEY = 'fhb-woo-carrier';
 	const TRACKING_NUMBER_KEY = '_fhb-api-tracking-number';
 	const TRACKING_LINK_KEY = '_fhb-api-tracking-link';
 	const CARRIER_KEY = '_fhb-api-carrier';
+	const DELIVERY_POINT_CODE_KEY = '_fhb-delivery-point-code';
 	const STATUS_SYNCED = 'synced';
 	const STATUS_ERROR = 'error';
 	const STATUS_DELETED = 'deleted';
@@ -31,6 +33,9 @@ class OrderRepo
     /** @var array */
     private $deliveryServiceMapping;
 
+    /** @var boolean */
+    private $groupOrders;
+
 
     public function __construct()
     {
@@ -42,6 +47,7 @@ class OrderRepo
         $this->invoice_prefix = get_option('kika_invoice_prefix', null);
         $this->invoice_field = get_option('kika_invoice_field', null);
         $this->productIgnoredPrefix = get_option('kika_ignore_product_prefix', null);
+		$this->groupOrders = get_option('kika_group_orders');
     }
 
 
@@ -55,6 +61,11 @@ class OrderRepo
 			$order = new WC_Order(get_the_ID());
 
 			$orderData = $this->prepareData($order);
+
+			if(!$this->groupOrders) {
+				$data[] = $orderData;
+				continue;
+			}
 
 			$index = $orderData['name'] . '-' . $orderData['city'] . '-' . $orderData['email'];
 			if(isset($data[$index])) {
@@ -84,7 +95,7 @@ class OrderRepo
 
 			'date_query' => [
 				'before' => '-10 minutes',
-				'after' => '-2 days',
+				'after' => '-14 days',
 			],
 
 			'meta_query' => [
@@ -214,11 +225,17 @@ class OrderRepo
         	$deliveryPoint = $this->getInPostPoint($order);
         }
 
+        if(!$deliveryPoint) {
+        	$deliveryPoint = $this->getCustomPoint($order);
+        }
+
 		if ($deliveryPoint) {
 			$street .= ' (' . $deliveryPoint . ')';
 		}
 
         $deliveryService = isset($this->deliveryServiceMapping[$shippingName]) ? $this->deliveryServiceMapping[$shippingName] : get_option('kika_service', null);
+        //$deliveryService = $this->getMappedDeliveryService($shippingName) ?: get_option('kika_service', null);
+        update_post_meta($order->get_id(), self::WOO_CARRIER_KEY, $shippingName);
 
         $data = [
 			'id' => $order->get_id(),
@@ -226,14 +243,14 @@ class OrderRepo
 			'name' => $name,
 			'email' => $order->get_billing_email(),
 			'street' => $street,
-			'country' => mb_strtolower($order->{$addrType.'_country'}),
+			'country' => mb_strtolower($order->{'get_'.$addrType.'_country'}()),
 			'city' => $city,
 			'psc' => $postcode,
 			'phone' => $order->get_billing_phone() ? $order->get_billing_phone() : null,
 			'invoiceLink' => isset($invoiceLink) ? $invoiceLink : '',
 			'cod' => get_option('kika_method_' . $order->get_payment_method()) ? (float) $order->get_total() : 0,
 			'parcelService' => $deliveryService,
-			'note' => '',
+			'note' => sprintf("WC carrier name: %s, order total: %.2f", $shippingName, $order->get_total()),
 		];
 
 		$items = $order->get_items();
@@ -299,6 +316,23 @@ class OrderRepo
 	public function getInPostPoint(WC_Order $order)
 	{
 		return get_post_meta($order->get_id(), 'paczkomat_key', true);
+	}
+
+
+	public function getCustomPoint(WC_Order $order)
+	{
+		return get_post_meta($order->get_id(), self::DELIVERY_POINT_CODE_KEY, true);
+	}
+
+	
+	public function getMappedDeliveryService($shippingName)
+	{
+		foreach ($this->deliveryServiceMapping as $mapName => $deliveryServiceId) {
+			if(strpos($shippingName, $mapName) !== false) {
+				return $deliveryServiceId;
+			}
+		}
+		return false;
 	}
 
 }

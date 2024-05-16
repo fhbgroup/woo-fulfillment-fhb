@@ -2,7 +2,7 @@
 
 <?php if($exported): ?>
 
-	<?php _e('Exported with', 'woocommerce-fhb-api'); ?> apiId: <span class="text-danger"><?php echo $post_id ?></span>
+	<?php _e('Exported with', 'woocommerce-fhb-api'); ?> apiId: <span class="text-danger"><?php echo $fhbApiId ?></span>
 
 <?php elseif($order): ?>
 
@@ -36,3 +36,8 @@
 	<div id="snippet-logs" class="log-box"></div>
 
 <?php endif ?>
+<br>
+<br>
+Export: <?php echo $fhbApiExport ?><br>
+Status: <?php echo $fhbApiStatus ?><br>
+Error:  <?php echo $fhbApiError  ?><br>

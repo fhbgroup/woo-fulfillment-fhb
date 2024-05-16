@@ -1,10 +1,11 @@
-# Fullfilment by FHB - woocommerce plugin (verzia 3.15)
+# Fullfilment by FHB - woocommerce plugin (verzia 3.25)
 Plugin slúžiaci na prepojenie s woocommerce s fullfilment systémom ZOE
 
 Read this in [English](readme.md)
 
 ## Obsah
   - [Inštalácia](#inštalácia)
+  - [HPOS kompatibilita](#high-performance-order-storage-hpos-compatibility)
   - [Nastavenie](#nastavenie)
   	- [Autorizácia](#autorizácia)
   	- [Objednávky](#objednávky)
@@ -27,6 +28,15 @@ Read this in [English](readme.md)
 
 ![](images/menu.png)
 
+### High-Performance Order Storage (HPOS) Compatibility
+Od WooCommerce 8.2, vydaného v Októbri 2023, High-Performance Order Storage (HPOS) je oficiálne označený ako stable a bude defaultne povolený v nových inštaláciách.
+
+Kompatibilný mód musí byť povolený pre správne fungovanie pluginu.
+
+Viac informácii [TU](https://woo.com/document/high-performance-order-storage/!)
+
+![](images/hpos-compatibility.jpg)
+
 ### Nastavenie
  - nasledovná sekcia obsahuje popis nastavení pluginu pre správnu funkčnosť
 
@@ -43,6 +53,7 @@ Read this in [English](readme.md)
 - Prefix API Id - prefix k ID objednávky, nutné vyplniť rôznymi hodnotamiu ak sa používa vo viacerých eshopoch
 - Prefix ignorovaného produktu - produkty, ktorých kód (SKU) začína na nastavený reťazec, budú ignorované
 - Ignorované krajiny - čiarkou oddelený zoznam kódov krajín, ktoré budú ignorované
+- Zlučovanie objednávok - všetky objednávky s rovnakým menom, emailom a mestom vrámci jedného exportu sú zlúčené dohromady
 
 #### Mapovanie statusov
 Slúži na zmenu statusu objednávky keď sa zmení stav objednávky vo fullfilment centre.

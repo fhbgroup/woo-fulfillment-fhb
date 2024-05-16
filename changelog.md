@@ -3,6 +3,36 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.25 - 2024-04-17
+- Order group feature - checkbox to activate in setting
+
+## Version 3.24 - 2024-04-15
+- Order detail box - show fhb specific order attributes
+- Cron job err handling - improve job stability
+
+## Version 3.23
+- Retrieves delivery point code from custom field _fhb-delivery-point-code
+
+## Version 3.22
+- Automatic export - selecting orders created in last 14 days (previously 2 days)
+
+## Version 3.21
+- Carrier mapping contains name - REVERT
+- Save woocommerce carrier name to order parameter
+
+## Version 3.20
+- Carrier mapping contains name
+- notify process - change status at last (when trackingNumber, trackingLinks and carrier name are filled)
+
+## Version 3.19
+- API id into variable symbol setting
+
+## Version 3.18
+- open settings refresh available carriers
+
+## Version 3.17
+- var_symbol prefix - removed dash
+
 ## Version 3.16
 - InPost delivery point support
 

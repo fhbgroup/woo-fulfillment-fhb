@@ -22,11 +22,11 @@ class ParcelServiceRepo
 	}
 
 
-	public function fetch()
+	public function fetch($force = false)
 	{
 		$services = get_option(self::KEY);
 
-		if (!$services or get_option(self::EXPIRE_KEY) < time()) {
+		if ($force or !$services or get_option(self::EXPIRE_KEY) < time()) {
 			$services = $this->download();
 		}
 

@@ -29,6 +29,9 @@ class Orders
     /** @var array */
     private $ignoreCountries;
 
+    /** @var boolean */
+    private $groupOrders;
+
 
 	public function __construct(OrderApi $orderApi, OrderRepo $orderRepo, ParcelServiceRepo $parcelServiceRepo, ProductRepo $productRepo)
 	{
@@ -37,6 +40,7 @@ class Orders
 		$this->parcelServiceRepo = $parcelServiceRepo;
 		$this->productRepo = $productRepo;
 		$this->ignoreCountries = explode(',', strtolower(get_option('kika_ignore_countries', null)));
+		$this->groupOrders = get_option('kika_group_orders');
 
 		add_action('admin_menu', [$this, 'addMenuItems']);
 		add_action('add_meta_boxes', [$this, 'addMetaBoxes']);
@@ -72,6 +76,10 @@ class Orders
 		$exported = get_post_meta($post_id, OrderRepo::STATUS_KEY, true) == OrderRepo::STATUS_SYNCED;
 		$order = wc_get_order($post_id);
 		$services = $this->parcelServiceRepo->fetch();
+        $fhbApiId = get_post_meta($post_id, OrderRepo::API_ID_KEY, true);
+        $fhbApiExport = get_post_meta($post_id, OrderRepo::EXPORT_KEY, true);
+        $fhbApiStatus = get_post_meta($post_id, OrderRepo::STATUS_KEY, true);
+        $fhbApiError = get_post_meta($post_id, OrderRepo::ERROR_KEY, true);
 		require 'templates/orderBox.php';
 	}
 
@@ -119,10 +127,17 @@ class Orders
     public function jobExport($die = true)
     {
         set_time_limit(0);
-        $export = time();
-        $orders = $this->orderRepo->fetchForExport($export, 200);
+        try {
+	        $export = time();
+	        $orders = $this->orderRepo->fetchForExport($export, 200);
+        	$this->exportOrders($orders, $export);
 
-        $this->exportOrders($orders, $export);
+        } catch (\Exception $e) {
+        	error_log(
+        		sprintf("FHB job error: %s", $e->getMessage())
+        	);
+        }
+
         if($die) {
         	wp_die();
         }
@@ -171,6 +186,11 @@ class Orders
 			$order = new WC_Order($post_id);
 			$orderData = $this->orderRepo->prepareData($order);
 			
+			if(!$this->groupOrders) {
+				$data[] = $orderData;
+				continue;
+			}
+
 			$index = $orderData['name'] . '-' . $orderData['city'] . '-' . $orderData['email'];
 			if(isset($data[$index])) {
 				$orderData = $this->orderRepo->groupOrders($data[$index], $orderData);
@@ -244,11 +264,6 @@ class Orders
 
 				$order = wc_get_order($orderId);
 
-
-				if ($order and $status) {
-					$order->update_status($status, '', true);
-				}
-
 				if($type == 'sent') {
 					$trackingUrls = [];
 					$kikaOrder = $this->getOrder($orderId);
@@ -294,6 +309,10 @@ class Orders
 					}
 
 				}
+
+				if ($order and $status) {
+					$order->update_status($status, '', true);
+				}
 			}
 
 			exit;
@@ -312,6 +331,7 @@ class Orders
 	{
 		$logs = [];
 		$prefix = get_option('kika_prefix');
+		$prefixToVariable = get_option('kika_prefix_to_variable');
 
 		if($checkAutoProducts) {
 			$disabledProducts = $this->productRepo->getAutoDisabledProducts();
@@ -319,9 +339,9 @@ class Orders
 
 		foreach ($orders as $order) {
 			$id = $order['id'];
-			$exportId = $prefix ? $prefix . '-' . $id : $id;
+			$exportId = $prefix ? $prefix . $id : $id;
 			$order['id'] = $exportId;
-			$order['variableSymbol'] = $prefix ? $prefix . '-' . $order['variableSymbol'] : $order['variableSymbol'];
+			$order['variableSymbol'] = ($prefixToVariable && $prefix) ? $prefix . $order['variableSymbol'] : $order['variableSymbol'];
 
 
 			if(isset($order['groupedIds'])) {
@@ -381,6 +401,10 @@ class Orders
 				$this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
 				$this->bulk_update_post_meta($ids, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
 				$logs[] = $this->createErrorMessage($e, $order, $single);
+			} catch (\Exception $e) {
+				error_log(
+					sprintf("FHB Plugin error, orderId %s : %s", implode(',', $ids), $e->getMessage())
+				);
 			}
 		}
 

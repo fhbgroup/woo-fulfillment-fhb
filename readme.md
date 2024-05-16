@@ -1,10 +1,11 @@
-# Fullfilment by FHB - woocommerce plugin (version 3.15)
+# Fullfilment by FHB - woocommerce plugin (version 3.25)
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 Čítaj tiež po [Slovensky](readme.sk.md)
 
 ## Contents
   - [Instalation](#instalation)
+  - [HPOS compatibility](#high-performance-order-storage-hpos-compatibility)
   - [Settings](#settings)
   	- [Connection](#connection)
   	- [Orders](#orders)
@@ -25,6 +26,15 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ![](images/menu.en.png)
 
+### High-Performance Order Storage (HPOS) Compatibility
+From WooCommerce 8.2, released on October 2023, High-Performance Order Storage (HPOS) is officially flagged as stable and will be enabled by default for new installations.
+
+Compatibility must be enabled for the plugin to work.
+
+More details available [HERE](https://woo.com/document/high-performance-order-storage/!)
+
+![](images/hpos-compatibility.jpg)
+
 ### Settings
 
 ![](images/setting.en.png)
@@ -39,6 +49,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 - Prefix API Id - prefix for order ID, necessary to fill with different values if multiple plugins are connected to the same ZOE account
 - Ignore product prefix - products whose SKU starts with this string will be ignored
 - Ignored countries - comma separated list of country codes that will be ignored
+- Group orders - all orders with the same name, city and email withing the same export are merged together
 
 #### Mapping of statuses
 Changes woocommerce order status when order change happen in fullfilment center.
