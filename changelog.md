@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.26 - 2025-05-02
+- province export to separate API field
+
 ## Version 3.25 - 2024-04-17
 - Order group feature - checkbox to activate in setting
 

@@ -191,10 +191,11 @@ class OrderRepo
 
         if ($order->{$addrType.'_state'}) { //get state name instead of code
         	$state = WC()->countries->get_states($order->{$addrType.'_country'})[$order->{$addrType.'_state'}];
-        	$state = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
-        	$city = $order->{'get_'.$addrType.'_city'}() . ' / ' . $state;
+        	$province = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
+        	$city = $order->{'get_'.$addrType.'_city'}();
         	$postcode = $order->{$addrType.'_postcode'} ? $order->{$addrType.'_postcode'} : '00000';
         } else {
+        	$province = null;
         	$city = $order->{'get_'.$addrType.'_city'}();
         	$postcode = $order->{'get_'.$addrType.'_postcode'}();
         }
@@ -245,6 +246,7 @@ class OrderRepo
 			'street' => $street,
 			'country' => mb_strtolower($order->{'get_'.$addrType.'_country'}()),
 			'city' => $city,
+			'province' => $province,
 			'psc' => $postcode,
 			'phone' => $order->get_billing_phone() ? $order->get_billing_phone() : null,
 			'invoiceLink' => isset($invoiceLink) ? $invoiceLink : '',
