@@ -174,7 +174,11 @@ class Products
 	private function updateProductInfo($productId, $key, $value)
 	{
 		if(!$this->sandbox) {
-			update_post_meta($productId, $key, $value);
+			$product = wc_get_product($productId);
+			if ($product) {
+				$product->update_meta_data($key, $value);
+				$product->save();
+			}
 		}
 	}
 

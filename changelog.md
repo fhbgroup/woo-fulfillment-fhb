@@ -3,6 +3,10 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.26 - 2025-12-16
+- HPOS compatibility
+- data handling standardization
+
 ## Version 3.26 - 2025-05-02
 - province export to separate API field
 

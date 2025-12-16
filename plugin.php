@@ -8,7 +8,7 @@
  * Plugin Name: Kika API
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
- * Version: 3.26
+ * Version: 3.27
  * Text Domain: woo-fulfillment-fhb
  * Domain Path: /languages
  */
@@ -84,6 +84,7 @@ new Products($productApi, $productRepo, get_option('kika_sandbox'));
 new SettingPanel($parcelServiceRepo);
 
 
+// legacy order table
 add_filter( 'manage_edit-shop_order_columns', function($columns) {
 	$new_columns = array();
 	foreach ( $columns as $column_name => $column_info ) {
@@ -96,12 +97,31 @@ add_filter( 'manage_edit-shop_order_columns', function($columns) {
 }, 20);
 
 
+// HSPOS order table
+add_filter(
+	'woocommerce_shop_order_list_table_columns',
+	function ($columns) {
+		$columns[ OrderRepo::STATUS_KEY ] = 'Kika API';
+		return $columns;
+	}
+);
+
+
+// legacy bulk action
 add_filter('bulk_actions-edit-shop_order', function($actions) {
 	$actions['fhb-bulk-export'] = "FHB Bulk export";
 	return $actions;
 }, 20, 1);
 
 
+// HPOS bulk action
+add_filter('bulk_actions-woocommerce_page_wc-orders', function($actions) {
+    $actions['fhb-bulk-export'] = "FHB Bulk export";
+    return $actions;
+}, 20, 1);
+
+
+// legacy bulk action handler
 add_filter('handle_bulk_actions-edit-shop_order', function($redirect_to, $action, $post_ids) use ($orders) {
 	if($action != 'fhb-bulk-export') {
 		return $redirect_to;
@@ -113,9 +133,39 @@ add_filter('handle_bulk_actions-edit-shop_order', function($redirect_to, $action
 }, 20, 3);
 
 
+// HPOS bulk action handler
+add_filter('handle_bulk_actions-woocommerce_page_wc-orders', function($redirect_to, $action, $order_ids) use ($orders) {
+    if($action != 'fhb-bulk-export') {
+        return $redirect_to;
+    }
+
+    $orders->bulkExport($order_ids);
+
+    return $redirect_to;
+}, 20, 3);
+
+
+// legacy order table col rendering
 add_action('manage_shop_order_posts_custom_column', function($column, $post_id) {
-	echo get_post_meta($post_id, $column, true);
+	if($column == OrderRepo::STATUS_KEY) {
+		echo get_post_meta($post_id, $column, true);
+	}
 }, 10, 2);
+
+
+// hspos order table col rendering
+add_action(
+	'woocommerce_shop_order_list_table_custom_column',
+	function ($column, $order) {
+		if ($column === OrderRepo::STATUS_KEY) {
+			echo esc_html(
+				$order->get_meta(OrderRepo::STATUS_KEY)
+			);
+		}
+	},
+	10,
+	2
+);
 
 
 add_action( 'plugins_loaded', function() {

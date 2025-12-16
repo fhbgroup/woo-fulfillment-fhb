@@ -59,25 +59,32 @@ class Orders
 
 	function addMetaBoxes()
 	{
-		add_meta_box('wc_fhb_kika_order', 'FHB Kika API', [$this, 'renderBox'], 'shop_order', 'side');
+		add_meta_box('wc_fhb_kika_order', 'FHB Kika API', [$this, 'renderBox'], wc_get_page_screen_id('shop-order'), 'side');
 	}
 
 
-	public function renderBox()
+	public function renderBox($orderId)
 	{
-		global $post_id;
+		if($orderId instanceof WC_Order) {
+			$order = $orderId;
+		} else {
+			$order = wc_get_order($orderId);
+		}
+		
+		$post_id = $order->get_id();
 		$nonce = wp_create_nonce('kika-api-verify');
-		$exported = get_post_meta($post_id, OrderRepo::STATUS_KEY, true) == OrderRepo::STATUS_SYNCED;
-		$order = wc_get_order($post_id);
 		$services = $this->parcelServiceRepo->fetch();
-        $fhbApiId = get_post_meta($post_id, OrderRepo::API_ID_KEY, true);
-        $fhbApiExport = get_post_meta($post_id, OrderRepo::EXPORT_KEY, true);
-        $fhbApiStatus = get_post_meta($post_id, OrderRepo::STATUS_KEY, true);
-        $fhbApiError = get_post_meta($post_id, OrderRepo::ERROR_KEY, true);
+
+		$exported = $order->get_meta(OrderRepo::STATUS_KEY) == OrderRepo::STATUS_SYNCED;	
+        $fhbApiId = $order->get_meta(OrderRepo::API_ID_KEY);
+        $fhbApiExport = $order->get_meta(OrderRepo::EXPORT_KEY);
+        $fhbApiStatus = $order->get_meta(OrderRepo::STATUS_KEY);
+        $fhbApiError = $order->get_meta(OrderRepo::ERROR_KEY);
+
 		require 'templates/orderBox.php';
 	}
 
-
+	
 	public function render()
 	{
 		$export = time();
@@ -121,6 +128,7 @@ class Orders
     public function jobExport()
     {
         set_time_limit(0);
+
         try {
 	        $export = time();
 	        $orders = $this->orderRepo->fetchForExport($export, 200);
@@ -132,7 +140,7 @@ class Orders
         	);
         }
 
-        wp_die();
+        return;
     }
 
 
@@ -171,11 +179,16 @@ class Orders
 
 		foreach ($post_ids as $post_id) {
 
-			$exported = get_post_meta($post_id, OrderRepo::STATUS_KEY, true) == OrderRepo::STATUS_SYNCED;
+			$order = new WC_Order($post_id);
+			if(!$order) {
+				continue;
+			}
+
+			$exported = $order->get_meta(OrderRepo::STATUS_KEY) == OrderRepo::STATUS_SYNCED;
 			if($exported)
 				continue;
 
-			$order = new WC_Order($post_id);
+			
 			$orderData = $this->orderRepo->prepareData($order);
 			
 			if(!$this->groupOrders) {
@@ -198,11 +211,16 @@ class Orders
 
 	public function getOrder($id)
 	{
-		if (get_post_meta($id, OrderRepo::STATUS_KEY, true) != OrderRepo::STATUS_SYNCED) {
+		$order = new WC_Order($id);
+		if(!$order) {
 			return;
 		}
 
-		$exportId = get_post_meta($id, OrderRepo::API_ID_KEY, true);
+		if ($order->get_meta(OrderRepo::STATUS_KEY) != OrderRepo::STATUS_SYNCED) {
+			return;
+		}
+
+		$exportId = $order->get_meta(OrderRepo::API_ID_KEY);
 
 		try {
 			$order = $this->orderApi->read($exportId ? $exportId : $id);
@@ -215,19 +233,26 @@ class Orders
 
 	public function delete($id)
 	{
-		if (get_post_meta($id, OrderRepo::STATUS_KEY, true) != OrderRepo::STATUS_SYNCED) {
+		$order = new WC_Order($id);
+		if(!$order) {
 			return;
 		}
 
-		$exportId = get_post_meta($id, OrderRepo::API_ID_KEY, true);
+		if ($order->get_meta(OrderRepo::STATUS_KEY) != OrderRepo::STATUS_SYNCED) {
+			return;
+		}
+
+		$exportId = $order->get_meta(OrderRepo::API_ID_KEY);
 
 		try {
 			$this->orderApi->delete($exportId ? $exportId : $id);
-			update_post_meta($id, OrderRepo::STATUS_KEY,  OrderRepo::STATUS_DELETED);
+			$order->update_meta_data(OrderRepo::STATUS_KEY, OrderRepo::STATUS_DELETED);
 		} catch (RestApiException $e) {
-			update_post_meta($id, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
-			update_post_meta($id, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
+			$order->update_meta_data(OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
+			$order->update_meta_data(OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
 		}
+
+		$order->save();
 	}
 
 
@@ -239,22 +264,29 @@ class Orders
 				$ids = [(int) $_GET['order']];
 			} elseif(isset($_GET['orders'])) {
 				$ids = array_map('intval', explode(',', $_GET['orders']));
+			} else {
+				$ids = [];
 			}
 
-
 			$type = sanitize_text_field($_GET['type']);
+			if (!in_array($type, ['sent', 'delivered', 'returned'], true)) {
+				wp_die('Invalid notification type', 400);
+			}
 			$token = $_GET['token'];
 
 			$status = get_option("kika_notify_$type");
 
 			foreach($ids as $orderId) {
 
-				if (get_post_meta($orderId, OrderRepo::TOKEN_KEY, true) != $token) {
+				$order = wc_get_order($orderId);
+				if(!$order) {
+					continue;
+				}
+
+				if ($order->get_meta(OrderRepo::TOKEN_KEY) != $token) {
 					header('HTTP/1.0 403 Forbidden');
 					exit;
 				}
-
-				$order = wc_get_order($orderId);
 
 				if($type == 'sent') {
 					$trackingUrls = [];
@@ -287,19 +319,20 @@ class Orders
 
 					$order->add_order_note($msg, true);
 
-					update_post_meta($order->get_id(), OrderRepo::TRACKING_NUMBER_KEY, implode(',', $trackings));
+					$order->update_meta_data(OrderRepo::TRACKING_NUMBER_KEY, implode(',', $trackings));
 					
 					$parcelServices = $this->parcelServiceRepo->fetch();
 					$assocParcelServices = array_combine(array_column($parcelServices, 'code'), array_column($parcelServices, 'name'));
 
 					if(isset($assocParcelServices[$kikaOrder->parcelService])) {
-						update_post_meta($order->get_id(), OrderRepo::CARRIER_KEY, $assocParcelServices[$kikaOrder->parcelService]);
+						$order->update_meta_data(OrderRepo::CARRIER_KEY, $assocParcelServices[$kikaOrder->parcelService]);
 					}
 					
 					if(isset($trackingLinks)) {
-						update_post_meta($order->get_id(), OrderRepo::TRACKING_LINK_KEY, implode(',', $trackingLinks));
+						$order->update_meta_data(OrderRepo::TRACKING_LINK_KEY, implode(',', $trackingLinks));
 					}
 
+					$order->save();
 				}
 
 				if ($order and $status) {
@@ -374,13 +407,16 @@ class Orders
 
 			try {
 				$this->orderApi->create($order);
-				$this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_SYNCED);
-				$this->bulk_update_post_meta($ids, OrderRepo::TOKEN_KEY, $token);
-				$this->bulk_update_post_meta($ids, OrderRepo::API_ID_KEY, $exportId);
-
+				$this->bulk_update_post_meta($ids, [
+					OrderRepo::STATUS_KEY => OrderRepo::STATUS_SYNCED,
+					OrderRepo::TOKEN_KEY => $token,
+					OrderRepo::API_ID_KEY => $exportId
+				]);
 			} catch (RestApiException $e) {
-				$this->bulk_update_post_meta($ids, OrderRepo::STATUS_KEY, OrderRepo::STATUS_ERROR);
-				$this->bulk_update_post_meta($ids, OrderRepo::ERROR_KEY, "Api ID: $exportId. " . $e->getMessage());
+				$this->bulk_update_post_meta($ids, [
+					OrderRepo::STATUS_KEY => OrderRepo::STATUS_ERROR,
+				 	OrderRepo::ERROR_KEY => sprintf("Api ID: %s error %s", $exportId, $e->getMessage())
+				]);
 				$logs[] = $this->createErrorMessage($e, $order, $single);
 			} catch (\Exception $e) {
 				error_log(
@@ -414,11 +450,23 @@ class Orders
     }
 
 
-    private function bulk_update_post_meta($ids, $key, $value)
+    private function bulk_update_post_meta($order_ids, $key_or_array, $value = null)
     {
-    	foreach ($ids as $id) {
-    		update_post_meta($id, $key, $value);
-    	}
-    }
+    	foreach ($order_ids as $order_id) {
+			$order = wc_get_order($order_id);
+			if (!$order) {
+				continue;
+			}
 
+			if (is_array($key_or_array)) {
+				foreach ($key_or_array as $key => $val) {
+					$order->update_meta_data($key, $val);
+				}
+			} else {
+				$order->update_meta_data($key_or_array, $value);
+			}
+
+			$order->save();
+		}
+    }
 }
