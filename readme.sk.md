@@ -31,7 +31,9 @@ Read this in [English](readme.md)
 ### High-Performance Order Storage (HPOS) Compatibility
 Od WooCommerce 8.2, vydaného v Októbri 2023, High-Performance Order Storage (HPOS) je oficiálne označený ako stable a bude defaultne povolený v nových inštaláciách.
 
-Kompatibilný mód musí byť povolený pre správne fungovanie pluginu.
+Verzie od 3.27 sú kompatibilné s HPOS.
+
+Nižšie verzie musia mať zapnutý Kompatibilný mód pre správne fungovanie pluginu.
 
 Viac informácii [TU](https://woo.com/document/high-performance-order-storage/!)
 

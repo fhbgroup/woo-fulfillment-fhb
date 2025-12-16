@@ -29,7 +29,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 ### High-Performance Order Storage (HPOS) Compatibility
 From WooCommerce 8.2, released on October 2023, High-Performance Order Storage (HPOS) is officially flagged as stable and will be enabled by default for new installations.
 
-Compatibility must be enabled for the plugin to work.
+Versions 3.27 and above are HPOS compatible.
+
+Older versions must have Compatibility mode enabled for correct function of plugin.
 
 More details available [HERE](https://woo.com/document/high-performance-order-storage/!)
 
