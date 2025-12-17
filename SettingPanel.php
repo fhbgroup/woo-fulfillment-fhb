@@ -41,7 +41,7 @@ class SettingPanel
 			$methods['kika_method_' . $method->id] = $method->title;
 		}
 
-		$deliveryMapping = [];
+		$deliveryMapping[] = [];
 		$loadedMapping = get_option('kika_delivery_service_mapping');
 
 		if($loadedMapping) {
