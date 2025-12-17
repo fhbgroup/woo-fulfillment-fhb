@@ -33,7 +33,7 @@ class Orders
 		$this->orderApi = $orderApi;
 		$this->orderRepo = $orderRepo;
 		$this->parcelServiceRepo = $parcelServiceRepo;
-		$this->ignoreCountries = explode(',', strtolower(get_option('kika_ignore_countries', null)));
+		$this->ignoreCountries = explode(',', strtolower(get_option('kika_ignore_countries', '')));
 		$this->groupOrders = get_option('kika_group_orders');
 
 		add_action('admin_menu', [$this, 'addMenuItems']);

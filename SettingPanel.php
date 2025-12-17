@@ -41,11 +41,15 @@ class SettingPanel
 			$methods['kika_method_' . $method->id] = $method->title;
 		}
 
+		$deliveryMapping = [];
 		$loadedMapping = get_option('kika_delivery_service_mapping');
-		$loadedMapping = unserialize($loadedMapping);
 
-		foreach ($loadedMapping as $key => $value) {
-			$deliveryMapping[] = [$key, $value];
+		if($loadedMapping) {
+			$loadedMapping = unserialize($loadedMapping);
+
+			foreach ($loadedMapping as $key => $value) {
+				$deliveryMapping[] = [$key, $value];
+			}
 		}
 
 		require 'templates/settings.php';
@@ -69,7 +73,7 @@ class SettingPanel
 		update_option('kika_notify_delivered', sanitize_text_field($_POST['delivered']));
 		update_option('kika_notify_returned', sanitize_text_field($_POST['returned']));
 		update_option('kika_service', sanitize_text_field($_POST['service']));
-		update_option('kika_sandbox', sanitize_text_field($_POST['sandbox']));
+		update_option('kika_sandbox', isset($_POST['sandbox']) ? sanitize_text_field($_POST['sandbox']) : '');
 		update_option('kika_prefix', sanitize_text_field($_POST['prefix']));
 		update_option('kika_prefix_to_variable', isset($_POST['prefixToVariable']) ? $_POST['prefixToVariable'] : '');
 		update_option('kika_group_orders', isset($_POST['groupOrders']) ? $_POST['groupOrders'] : '');
@@ -77,7 +81,7 @@ class SettingPanel
 		update_option('kika_ignore_countries', sanitize_text_field($_POST['ignoreCountries']));
 		update_option('kika_status_delete', is_array($_POST['delete']) ? array_map('sanitize_text_field', $_POST['delete']) : null);
 
-		$autoimport = sanitize_text_field($_POST['autoimport']);
+		$autoimport = isset($_POST['autoimport']) ? sanitize_text_field($_POST['autoimport']) : '';
 		if($autoimport) {
 		    if (!wp_next_scheduled('wp_job_fhb_kika_export_order')) {
 		        wp_schedule_event(time() + 3600, 'hourly', 'wp_job_fhb_kika_export_order');
@@ -95,7 +99,8 @@ class SettingPanel
 				continue;
 			}
 			$id = 'kika_method_' . $method->id;
-			update_option($id, sanitize_text_field($_POST[$id]));
+			$value = isset($_POST[$id]) ? sanitize_text_field($_POST[$id]) : '';
+			update_option($id, $value);
 		}
 
         update_option('kika_invoice_prefix', sanitize_text_field($_POST['invoicePrefix']));
