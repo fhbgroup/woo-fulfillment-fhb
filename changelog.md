@@ -3,7 +3,10 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
-## Version 3.26 - 2025-12-16
+## Version 3.28 - 2026-03-20
+- notify process - return code 500 if order fetch fails (FHB system will retry later)
+
+## Version 3.27 - 2025-12-16
 - HPOS compatibility
 - data handling standardization
 

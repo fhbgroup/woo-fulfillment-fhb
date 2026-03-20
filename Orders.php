@@ -292,6 +292,11 @@ class Orders
 					$trackingUrls = [];
 					$kikaOrder = $this->getOrder($orderId);
 
+					if(!$kikaOrder) {
+						header('HTTP/1.0 500 Error fetching Order from FHB system');
+						exit;
+					}
+
 					if($kikaOrder->status !== 'sent') {
 						continue;
 					}
