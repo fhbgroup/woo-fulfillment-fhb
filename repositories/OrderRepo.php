@@ -300,7 +300,7 @@ class OrderRepo
 		$street .= $order->{'get_'.$addrType.'_state'}() ? ', ' . $order->{'get_'.$addrType.'_state'}() : '';
 
         if ($order->{'get_'.$addrType.'_state'}()) { //get state name instead of code
-        	$state = WC()->countries->get_states($order->{$addrType.'_country'})[$order->{$addrType.'_state'}];
+        	$state = WC()->countries->get_states($order->{'get_'.$addrType.'_country'})[$order->{'get_'.$addrType.'_state'}];
         	$province = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
         	$city = $order->{'get_'.$addrType.'_city'}();
         	$postcode = $order->{'get_'.$addrType.'_postcode'}() ? $order->{'get_'.$addrType.'_postcode'}() : '00000';
