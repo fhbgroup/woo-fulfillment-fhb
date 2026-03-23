@@ -303,7 +303,7 @@ class OrderRepo
         	$state = WC()->countries->get_states($order->{$addrType.'_country'})[$order->{$addrType.'_state'}];
         	$province = html_entity_decode($state, ENT_QUOTES | ENT_XML1, 'UTF-8');
         	$city = $order->{'get_'.$addrType.'_city'}();
-        	$postcode = $order->{'get_'.$addrType.'_postcode'}() ? $order->{$addrType.'_postcode'}() : '00000';
+        	$postcode = $order->{'get_'.$addrType.'_postcode'}() ? $order->{'get_'.$addrType.'_postcode'}() : '00000';
         } else {
         	$province = null;
         	$city = $order->{'get_'.$addrType.'_city'}();
