@@ -3,6 +3,10 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.30 - 2026-07-13
+- setting page loading values fix
+- packeta delivery point fetch fix
+
 ## Version 3.29 - 2026-03-23
 - get postcode method name fix
 

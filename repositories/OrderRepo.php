@@ -424,7 +424,11 @@ class OrderRepo
 
 		if($zasilkovna_id) return $zasilkovna_id;
 
-		$zasilkovna_id = $order->get_meta('zasilkovna_id_pobocky', false);
+		$zasilkovna_id = $order->get_meta('zasilkovna_id_pobocky', true);
+
+		if (empty($zasilkovna_id)) {
+			$zasilkovna_id = $order->get_meta('zasilkovna_id', true); // legacy alias
+		}
 
 		return $zasilkovna_id;
 	}
