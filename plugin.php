@@ -8,7 +8,7 @@
  * Plugin Name: Kika API
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
- * Version: 3.30
+ * Version: 3.31
  * Text Domain: woo-fulfillment-fhb
  * Domain Path: /languages
  */
@@ -29,6 +29,14 @@ register_activation_hook(__FILE__, function() {
 register_deactivation_hook(__FILE__, function() {
     if (wp_next_scheduled('wp_job_fhb_kika_export_order')) {
         wp_clear_scheduled_hook('wp_job_fhb_kika_export_order');
+    }
+});
+
+// re-assert the export cron on every load - covers reactivation, migrations,
+// or anything else that silently wipes the wp_options `cron` entry
+add_action('init', function() {
+    if (get_option('kika_autoimport') && !wp_next_scheduled('wp_job_fhb_kika_export_order')) {
+        wp_schedule_event(time() + 3600, 'hourly', 'wp_job_fhb_kika_export_order');
     }
 });
 

@@ -1,4 +1,4 @@
-# Fullfilment by FHB - woocommerce plugin (version 3.30)
+# Fullfilment by FHB - woocommerce plugin (version 3.31)
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 Čítaj tiež po [Slovensky](readme.sk.md)

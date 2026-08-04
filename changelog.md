@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.31 - 2026-08-04
+- re-assert the export cron on every load (restore when cron dissapears)
+
 ## Version 3.30 - 2026-07-13
 - setting page loading values fix
 - packeta delivery point fetch fix
