@@ -3,6 +3,9 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.32 - 2026-08-21
+- HOOKS feature - calling apiv3 to get order details, send hooks for sent, delivered, returned event (with order details)
+
 ## Version 3.31 - 2026-08-04
 - re-assert the export cron on every load (restore when cron dissapears)
 

@@ -1,4 +1,4 @@
-# Fullfilment by FHB - woocommerce plugin (version 3.31)
+# Fullfilment by FHB - woocommerce plugin (version 3.32)
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 Čítaj tiež po [Slovensky](readme.sk.md)
@@ -16,6 +16,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
   - [Exporting](#exporting)
     - [Products](#exporting-of-products)
     - [Orders](#exporting-of-orders)
+  - [Hooks](#hooks)
 
 
 ### Instalation
@@ -99,3 +100,10 @@ Bulk export of orders is also possible via bulk action "FHB Bulk export" on Orde
 All unexported marked orders will be exported.
 
 ![](images/bulkexport.png)
+
+### Hooks
+For developers who need to react to fulfillment notifications coming from the ZOE system, plugin fires following WordPress hooks. All hooks receive current `WC_Order` as first parameter.
+
+- `kika_notification_sent` - fired when order was sent from fulfillment center. Second parameter is an array containing `order` (order detail read from ZOE API v3), `shipped_at`, `tracking` (list of tracking numbers), `tracking_links`, `weight` (list of package weights), `parcel_service_code` and `parcel_service` (mapped carrier name, if known)
+- `kika_notification_delivered` - fired when order was delivered to customer. Second parameter contains the same data as `kika_notification_sent`, with `delivered_at` instead of `shipped_at`
+- `kika_notification_returned` - fired when order was returned to fulfillment center. Second parameter contains the same data as `kika_notification_sent`, without a shipping/delivery date

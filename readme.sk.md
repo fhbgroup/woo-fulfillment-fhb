@@ -1,4 +1,4 @@
-# Fullfilment by FHB - woocommerce plugin (verzia 3.31)
+# Fullfilment by FHB - woocommerce plugin (verzia 3.32)
 Plugin slúžiaci na prepojenie s woocommerce s fullfilment systémom ZOE
 
 Read this in [English](readme.md)
@@ -16,6 +16,7 @@ Read this in [English](readme.md)
   - [Exportovanie](#exportovanie)
     - [Produkty](#exportovanie-produktov)
     - [Objednávky](#exportovanie-objednávok)
+  - [Hooks](#hooks)
 
 
 ### Inštalácia
@@ -109,3 +110,10 @@ Hromadný export objednávok je možný cez hromadný príkaz "FHB Bulk export" 
 Všetky neexportované označené objednávky sa touto akcou exportujú.
 
 ![](images/bulkexport.png)
+
+### Hooks
+Pre vývojárov, ktorí potrebujú reagovať na notifikácie z fullfilment systému ZOE, plugin spúšťa nasledovné WordPress hooky. Všetky hooky dostávajú ako prvý parameter aktuálnu `WC_Order`.
+
+- `kika_notification_sent` - spustí sa keď je objednávka odoslaná z fullfilment centra. Druhý parameter je pole obsahujúce `order` (detail objednávky načítaný zo ZOE API v3), `shipped_at`, `tracking` (zoznam trackovacích čísel), `tracking_links`, `weight` (zoznam hmotností balíkov), `parcel_service_code` a `parcel_service` (namapovaný názov prepravcu, ak je známy)
+- `kika_notification_delivered` - spustí sa keď je objednávka doručená zákazníkovi. Druhý parameter obsahuje rovnaké údaje ako `kika_notification_sent`, namiesto `shipped_at` obsahuje `delivered_at`
+- `kika_notification_returned` - spustí sa keď je objednávka vrátená do fullfilment centra. Druhý parameter obsahuje rovnaké údaje ako `kika_notification_sent`, bez dátumu odoslania/doručenia
