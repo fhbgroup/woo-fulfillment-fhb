@@ -3,6 +3,7 @@
 namespace Kika;
 
 use Kika\Api\OrderApi;
+use Kika\Api\V3\OrderApi as OrderApiV3;
 use Kika\Api\RestApiException;
 use Kika\Repositories\OrderRepo;
 use Kika\Repositories\ParcelServiceRepo;
@@ -14,6 +15,9 @@ class Orders
 
 	/** @var OrderApi */
 	private $orderApi;
+
+	/** @var OrderApiV3 */
+	private $orderApiV3;
 
 	/** @var OrderRepo */
 	private $orderRepo;
@@ -28,9 +32,10 @@ class Orders
     private $groupOrders;
 
 
-	public function __construct(OrderApi $orderApi, OrderRepo $orderRepo, ParcelServiceRepo $parcelServiceRepo)
+	public function __construct(OrderApi $orderApi, OrderRepo $orderRepo, ParcelServiceRepo $parcelServiceRepo, OrderApiV3 $orderApiV3)
 	{
 		$this->orderApi = $orderApi;
+		$this->orderApiV3 = $orderApiV3;
 		$this->orderRepo = $orderRepo;
 		$this->parcelServiceRepo = $parcelServiceRepo;
 		$this->ignoreCountries = explode(',', strtolower(get_option('kika_ignore_countries', '')));
@@ -289,32 +294,37 @@ class Orders
 				}
 
 				if($type == 'sent') {
-					$trackingUrls = [];
-					$kikaOrder = $this->getOrder($orderId);
+					$exportId = $order->get_meta(OrderRepo::API_ID_KEY);
 
-					if(!$kikaOrder) {
-						header('HTTP/1.0 500 Error fetching Order from FHB system');
+					try {
+						$kikaOrder = $this->orderApiV3->read($exportId ? $exportId : $orderId);
+					} catch (RestApiException $e) {
+						header('HTTP/1.0 500 Error fetching Order from FHB API v3');
 						exit;
 					}
 
-					if($kikaOrder->status !== 'sent') {
+					if ($kikaOrder->getStatus() !== 'sent') {
 						continue;
 					}
 
-					if(isset($kikaOrder->_embedded->trackingNumber)) {
-						$trackings = $kikaOrder->_embedded->trackingNumber;
-					} else {
+					if (!$kikaOrder->getPackages()) {
 						continue;
 					}
+
+					$notificationData = $this->buildTrackingNotificationData($kikaOrder);
+					$trackings = $notificationData['tracking'];
+					$trackingLinks = $notificationData['tracking_links'];
 
 					$msg = __('Order was sent with tracking number ', 'woocommerce-fhb-api');
-					if(isset($kikaOrder->_embedded->trackingLink)) {
-						$trackingLinks = [];
-						foreach ($trackings  as $i => $track) {
-							$link = '<a href="' . $kikaOrder->_embedded->trackingLink[$i] . '">' . $trackings[$i] . '</a>';
+					if ($trackingLinks) {
+						$links = [];
+						foreach ($trackings as $i => $tracking) {
+							$link = isset($trackingLinks[$i])
+								? '<a href="' . $trackingLinks[$i] . '">' . $tracking . '</a>'
+								: $tracking;
 							$msg .= ' ' . $link;
-							$trackingLinks[] = $link;
- 						}
+							$links[] = $link;
+						}
 
 					} else {
 						$msg .= implode(',', $trackings);
@@ -325,19 +335,48 @@ class Orders
 					$order->add_order_note($msg, true);
 
 					$order->update_meta_data(OrderRepo::TRACKING_NUMBER_KEY, implode(',', $trackings));
-					
-					$parcelServices = $this->parcelServiceRepo->fetch();
-					$assocParcelServices = array_combine(array_column($parcelServices, 'code'), array_column($parcelServices, 'name'));
 
-					if(isset($assocParcelServices[$kikaOrder->parcelService])) {
-						$order->update_meta_data(OrderRepo::CARRIER_KEY, $assocParcelServices[$kikaOrder->parcelService]);
+					if ($notificationData['parcel_service']) {
+						$order->update_meta_data(OrderRepo::CARRIER_KEY, $notificationData['parcel_service']);
 					}
-					
-					if(isset($trackingLinks)) {
-						$order->update_meta_data(OrderRepo::TRACKING_LINK_KEY, implode(',', $trackingLinks));
+
+					if(isset($links)) {
+						$order->update_meta_data(OrderRepo::TRACKING_LINK_KEY, implode(',', $links));
 					}
 
 					$order->save();
+
+					do_action('kika_notification_sent', $order, ['shipped_at' => $kikaOrder->getShippedAt()] + $notificationData);
+				}
+
+				if($type == 'delivered') {
+					$exportId = $order->get_meta(OrderRepo::API_ID_KEY);
+
+					try {
+						$kikaOrder = $this->orderApiV3->read($exportId ? $exportId : $orderId);
+					} catch (RestApiException $e) {
+						header('HTTP/1.0 500 Error fetching Order from FHB API v3');
+						exit;
+					}
+
+					$notificationData = $this->buildTrackingNotificationData($kikaOrder);
+
+					do_action('kika_notification_delivered', $order, ['delivered_at' => $kikaOrder->getDeliveredAt()] + $notificationData);
+				}
+
+				if($type == 'returned') {
+					$exportId = $order->get_meta(OrderRepo::API_ID_KEY);
+
+					try {
+						$kikaOrder = $this->orderApiV3->read($exportId ? $exportId : $orderId);
+					} catch (RestApiException $e) {
+						header('HTTP/1.0 500 Error fetching Order from FHB API v3');
+						exit;
+					}
+
+					$notificationData = $this->buildTrackingNotificationData($kikaOrder);
+
+					do_action('kika_notification_returned', $order, $notificationData);
 				}
 
 				if ($order and $status) {
@@ -347,6 +386,30 @@ class Orders
 
 			exit;
 		}
+	}
+
+
+	private function buildTrackingNotificationData($kikaOrder)
+	{
+		$trackings = [];
+		$weights = [];
+		foreach ($kikaOrder->getPackages() as $package) {
+			$trackings[] = $package->getTrackingNumber();
+			$weights[] = $package->getWeight();
+		}
+
+		$parcelServices = $this->parcelServiceRepo->fetch();
+		$assocParcelServices = array_combine(array_column($parcelServices, 'code'), array_column($parcelServices, 'name'));
+		$parcelServiceCode = $kikaOrder->getParcelService();
+
+		return [
+			'order' => $kikaOrder,
+			'tracking' => $trackings,
+			'tracking_links' => $kikaOrder->getTrackingLinks(),
+			'weight' => $weights,
+			'parcel_service_code' => $parcelServiceCode,
+			'parcel_service' => isset($assocParcelServices[$parcelServiceCode]) ? $assocParcelServices[$parcelServiceCode] : null,
+		];
 	}
 
 

@@ -49,6 +49,10 @@ require_once('api/RestApi.php');
 require_once('api/OrderApi.php');
 require_once('api/ProductApi.php');
 require_once('api/InfoApi.php');
+require_once('api/v3/RestApi.php');
+require_once('api/v3/View.php');
+require_once('api/v3/Order.php');
+require_once('api/v3/OrderApi.php');
 require_once('repositories/ProductRepo.php');
 require_once('repositories/OrderRepo.php');
 require_once('repositories/ParcelServiceRepo.php');
@@ -61,6 +65,8 @@ use Kika\Api\RestApi;
 use Kika\Api\OrderApi;
 use Kika\Api\ProductApi;
 use Kika\Api\InfoApi;
+use Kika\Api\V3\RestApi as RestApiV3;
+use Kika\Api\V3\OrderApi as OrderApiV3;
 use Kika\SettingPanel;
 use Kika\Products;
 use Kika\Orders;
@@ -83,11 +89,19 @@ $productApi = new ProductApi($restApi);
 $orderApi = new OrderApi($restApi);
 $infoApi = new InfoApi($restApi);
 
+$restApiV3 = new RestApiV3($apiId, $secret);
+
+if (get_option('kika_sandbox')) {
+	$restApiV3->setEndpoint('https://api-dev.fhb.sk/v3');
+}
+
+$orderApiV3 = new OrderApiV3($restApiV3);
+
 $productRepo = new ProductRepo();
 $parcelServiceRepo = new ParcelServiceRepo($infoApi);
 $orderRepo = new OrderRepo($parcelServiceRepo);
 
-$orders = new Orders($orderApi, $orderRepo, $parcelServiceRepo);
+$orders = new Orders($orderApi, $orderRepo, $parcelServiceRepo, $orderApiV3);
 new Products($productApi, $productRepo, get_option('kika_sandbox'));
 new SettingPanel($parcelServiceRepo);
 
