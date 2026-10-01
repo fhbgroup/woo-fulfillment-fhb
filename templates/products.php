@@ -21,4 +21,16 @@
 
 	<div id="snippet-logs" data-ajax-append></div>
 
+	<?php if (\Kika\StockSync::isAvailable()): ?>
+		<h2><?php _e('Stock sync', 'woocommerce-fhb-api'); ?></h2>
+
+		<button data-url="<?php echo admin_url("admin-ajax.php?action=fhb_kika_stock_sync&nonce=$nonce") ?>" class="button kika-ajax" data-progress-text="<?php _e('Syncing', 'woocommerce-fhb-api'); ?>..." data-spinner="#stock-sync-spinner">
+			<?php _e('Sync stock now', 'woocommerce-fhb-api'); ?>
+		</button>
+
+		<img id="stock-sync-spinner" src="<?php echo KIKA_PLUGIN_URL ?>/assets/ajax-loader.gif" alt="" style="margin: 6px; display:none">
+
+		<p id="snippet-stock-sync-log"></p>
+	<?php endif ?>
+
 </div>

@@ -93,6 +93,16 @@ class SettingPanel
 		}
 		update_option('kika_autoimport', $autoimport);
 
+		$stockSync = isset($_POST['stockSync']) && StockSync::isAvailable() ? '1' : '';
+		if ($stockSync) {
+			if (!wp_next_scheduled(StockSync::JOB)) {
+				wp_schedule_event(time() + 1800, 'hourly', StockSync::JOB);
+			}
+		} else {
+			wp_clear_scheduled_hook(StockSync::JOB);
+		}
+		update_option('kika_stock_sync', $stockSync);
+
 		$gateways = new WC_Payment_Gateways();
 		foreach($gateways->payment_gateways() as $method) {
 			if($method->enabled !== 'yes') {

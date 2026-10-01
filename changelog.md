@@ -3,6 +3,12 @@ Plugin for integration woocommerce store with ZOE fullfilment system
 
 ## History of changes
 
+## Version 3.33 - 2026-10-01
+- STOCK SYNC feature - hourly job (checkbox "Stock sync" in settings, available only when WooCommerce stock management is enabled) + manual "Sync stock now" button in Products section
+- stock level calculation: `free_quantity` from ZOE (apiv3 `product/all`, already reduced by orders exported to ZOE) minus `_reduced_stock` of WooCommerce orders not yet exported (statuses processing/on-hold, without fhb-api-status synced/skipped/deleted), never below 0
+- only products/variations with stock management enabled on their own level are updated (matched by SKU), multi products are skipped
+- logging into debug.log with prefix [Kika StockSync]
+
 ## Version 3.32 - 2026-08-21
 - HOOKS feature - calling apiv3 to get order details, send hooks for sent, delivered, returned event (with order details)
 

@@ -288,6 +288,53 @@ class OrderRepo
 	}
 
 
+	/**
+	 * Stock already deducted by WC (_reduced_stock) on orders ZOE doesn't know about yet, keyed by SKU.
+	 */
+	public function fetchUnexportedReducedStock()
+	{
+		$reduced = [];
+		$limit = 200;
+		$page = 1;
+
+		do {
+			$orders = wc_get_orders([
+				'type' => 'shop_order',
+				'status' => ['wc-processing', 'wc-on-hold'],
+				'limit' => $limit,
+				'paged' => $page++,
+				'meta_query' => [
+					'relation' => 'OR',
+					[
+						'key' => self::STATUS_KEY,
+						'compare' => 'NOT EXISTS',
+					],
+					[
+						'key' => self::STATUS_KEY,
+						'compare' => 'NOT IN',
+						'value' => [self::STATUS_SYNCED, self::STATUS_SKIPPED, self::STATUS_DELETED],
+					],
+				],
+			]);
+
+			foreach ($orders as $order) {
+				foreach ($order->get_items() as $item) {
+					/** @var WC_Order_Item_Product $item */
+					$qty = (int) $item->get_meta('_reduced_stock', true);
+					$product = $item->get_product();
+					$sku = $product ? $product->get_sku('edit') : null;
+					if ($qty <= 0 || !$sku) {
+						continue;
+					}
+					$reduced[$sku] = (isset($reduced[$sku]) ? $reduced[$sku] : 0) + $qty;
+				}
+			}
+		} while (count($orders) === $limit);
+
+		return $reduced;
+	}
+
+
 	public function prepareData(WC_Order $order)
 	{
 		$addrType = ($order->get_shipping_first_name()) ? 'shipping' : 'billing';

@@ -1,4 +1,4 @@
-# Fullfilment by FHB - woocommerce plugin (version 3.32)
+# Fullfilment by FHB - woocommerce plugin (version 3.33)
 Plugin for integration woocommerce store with ZOE fullfilment system
 
 Čítaj tiež po [Slovensky](readme.sk.md)
@@ -16,6 +16,7 @@ Plugin for integration woocommerce store with ZOE fullfilment system
   - [Exporting](#exporting)
     - [Products](#exporting-of-products)
     - [Orders](#exporting-of-orders)
+  - [Stock sync](#stock-sync)
   - [Hooks](#hooks)
 
 
@@ -46,6 +47,7 @@ More details available [HERE](https://woo.com/document/high-performance-order-st
 #### Connection
 - API AppId + API Secret - values generated in ZOE system, for pairing with ZOE account
 - Sandbox Mode - checkbox, indicates if plugin is connected to production, or test system. Checked if connected to test system
+- Stock sync - checkbox, activates hourly synchronization of stock levels from ZOE (see [Stock sync](#stock-sync)). Available only when stock management is enabled in WooCommerce
 
 #### Orders
 - default carrier - optional, default carrier that will be assigned to order
@@ -100,6 +102,21 @@ Bulk export of orders is also possible via bulk action "FHB Bulk export" on Orde
 All unexported marked orders will be exported.
 
 ![](images/bulkexport.png)
+
+### Stock sync
+Plugin can keep WooCommerce stock levels in sync with stock in ZOE fulfillment center. Requires stock management enabled in WooCommerce (WooCommerce -> Settings -> Products -> Inventory).
+
+- automatic - checkbox "Stock sync" in settings, runs once per hour
+- manual - button "Sync stock now" in Products section of plugin (works also when automatic sync is not active)
+
+Stock level of each product is calculated as:
+
+**free quantity in ZOE** (stock minus orders already exported to ZOE) **- quantity of the product in orders not yet exported to ZOE** (orders in processing / on-hold status, whose stock was already reduced by WooCommerce)
+
+- products are paired by SKU
+- only products and variations with "Manage stock" enabled directly on them are updated
+- stock level is never set below 0
+- progress and results are logged into WordPress debug.log with prefix `[Kika StockSync]`
 
 ### Hooks
 For developers who need to react to fulfillment notifications coming from the ZOE system, plugin fires following WordPress hooks. All hooks receive current `WC_Order` as first parameter.

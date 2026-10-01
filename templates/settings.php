@@ -42,6 +42,21 @@
 					</label>
 				</td>
 			</tr>
+
+			<tr>
+				<th><label for="stockSync">Stock sync</label></th>
+				<td>
+					<label>
+						<input name="stockSync" type="checkbox" value="1" <?php checked((bool) get_option('kika_stock_sync')) ?> <?php disabled(!\Kika\StockSync::isAvailable()) ?> />
+						Active
+					</label>
+					<p class="description">
+						<?php echo \Kika\StockSync::isAvailable()
+							? 'Hourly: sets stock of stock-managed products to ZOE free quantity minus unexported orders.'
+							: 'Enable stock management in WooCommerce → Settings → Products → Inventory first.' ?>
+					</p>
+				</td>
+			</tr>
 		</table>
 
 		<h2><?php _e('Orders','woocommerce-fhb-api'); ?></h2>

@@ -8,7 +8,7 @@
  * Plugin Name: Kika API
  * Plugin URI: http://www.fhb.sk/
  * Description: Woocommerce integrácia na fullfilment systém KIKA
- * Version: 3.32
+ * Version: 3.33
  * Text Domain: woo-fulfillment-fhb
  * Domain Path: /languages
  */
@@ -30,6 +30,7 @@ register_deactivation_hook(__FILE__, function() {
     if (wp_next_scheduled('wp_job_fhb_kika_export_order')) {
         wp_clear_scheduled_hook('wp_job_fhb_kika_export_order');
     }
+    wp_clear_scheduled_hook('wp_job_fhb_kika_stock_sync');
 });
 
 // re-assert the export cron on every load - covers reactivation, migrations,
@@ -37,6 +38,9 @@ register_deactivation_hook(__FILE__, function() {
 add_action('init', function() {
     if (get_option('kika_autoimport') && !wp_next_scheduled('wp_job_fhb_kika_export_order')) {
         wp_schedule_event(time() + 3600, 'hourly', 'wp_job_fhb_kika_export_order');
+    }
+    if (get_option('kika_stock_sync') && !wp_next_scheduled('wp_job_fhb_kika_stock_sync')) {
+        wp_schedule_event(time() + 1800, 'hourly', 'wp_job_fhb_kika_stock_sync');
     }
 });
 
@@ -53,12 +57,14 @@ require_once('api/v3/RestApi.php');
 require_once('api/v3/View.php');
 require_once('api/v3/Order.php');
 require_once('api/v3/OrderApi.php');
+require_once('api/v3/ProductApi.php');
 require_once('repositories/ProductRepo.php');
 require_once('repositories/OrderRepo.php');
 require_once('repositories/ParcelServiceRepo.php');
 require_once('SettingPanel.php');
 require_once('Orders.php');
 require_once('Products.php');
+require_once('StockSync.php');
 require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 use Kika\Api\RestApi;
@@ -67,7 +73,9 @@ use Kika\Api\ProductApi;
 use Kika\Api\InfoApi;
 use Kika\Api\V3\RestApi as RestApiV3;
 use Kika\Api\V3\OrderApi as OrderApiV3;
+use Kika\Api\V3\ProductApi as ProductApiV3;
 use Kika\SettingPanel;
+use Kika\StockSync;
 use Kika\Products;
 use Kika\Orders;
 use Kika\Repositories\ProductRepo;
@@ -104,6 +112,7 @@ $orderRepo = new OrderRepo($parcelServiceRepo);
 $orders = new Orders($orderApi, $orderRepo, $parcelServiceRepo, $orderApiV3);
 new Products($productApi, $productRepo, get_option('kika_sandbox'));
 new SettingPanel($parcelServiceRepo);
+new StockSync(new ProductApiV3($restApiV3), $orderRepo);
 
 
 // legacy order table
