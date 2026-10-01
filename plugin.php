@@ -89,7 +89,7 @@ $secret = get_option('kika_secret');
 $restApi = new RestApi($apiId, $secret);
 
 if (get_option('kika_sandbox')) {
-	$restApi->setEndpoint('https://system-dev.fhb.sk/api/v2');
+	$restApi->setEndpoint('https://system-stage.fhb.sk/api/v2');
 	//$restApi->setEndpoint('localhost/kika-system/api/v2');
 }
 
@@ -100,7 +100,7 @@ $infoApi = new InfoApi($restApi);
 $restApiV3 = new RestApiV3($apiId, $secret);
 
 if (get_option('kika_sandbox')) {
-	$restApiV3->setEndpoint('https://api-dev.fhb.sk/v3');
+	$restApiV3->setEndpoint('https://api-stage.fhb.sk/v3');
 }
 
 $orderApiV3 = new OrderApiV3($restApiV3);
