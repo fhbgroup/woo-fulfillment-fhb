@@ -1,4 +1,4 @@
-# Fullfilment by FHB - woocommerce plugin (verzia 3.32)
+# Fullfilment by FHB - woocommerce plugin (verzia 3.33)
 Plugin slúžiaci na prepojenie s woocommerce s fullfilment systémom ZOE
 
 Read this in [English](readme.md)
@@ -16,6 +16,7 @@ Read this in [English](readme.md)
   - [Exportovanie](#exportovanie)
     - [Produkty](#exportovanie-produktov)
     - [Objednávky](#exportovanie-objednávok)
+  - [Synchronizácia skladu](#synchronizácia-skladu)
   - [Hooks](#hooks)
 
 
@@ -50,6 +51,7 @@ Viac informácii [TU](https://woo.com/document/high-performance-order-storage/!)
 #### Autorizácia
 - API AppId + API Secret - hodnoty vygenerované v systéme ZOE, určené na spárovanie so zákazníckym účtom
 - Sandbox Mode - checkbox, indikuje či je plugin napojený na produkčný alebo testovací účet 
+- Stock sync - checkbox, aktivuje hodinovú synchronizáciu skladových zásob zo systému ZOE (viď [Synchronizácia skladu](#synchronizácia-skladu)). Dostupné iba ak je vo WooCommerce zapnutá správa skladu
 
 #### Objednávky
 - default prepravca - nepovinné, default prepravca ktorý sa prideľuje objednávke
@@ -110,6 +112,21 @@ Hromadný export objednávok je možný cez hromadný príkaz "FHB Bulk export" 
 Všetky neexportované označené objednávky sa touto akcou exportujú.
 
 ![](images/bulkexport.png)
+
+### Synchronizácia skladu
+Plugin vie udržiavať skladové zásoby vo WooCommerce zosúladené so skladom vo fullfilment centre ZOE. Vyžaduje zapnutú správu skladu vo WooCommerce (WooCommerce -> Nastavenia -> Produkty -> Sklad).
+
+- automaticky - checkbox "Stock sync" v nastaveniach, spúšťa sa raz za hodinu
+- manuálne - tlačidlo "Sync stock now" v sekcii Produkty pluginu (funguje aj keď automatická synchronizácia nie je aktívna)
+
+Skladová zásoba produktu sa vypočíta ako:
+
+**voľné množstvo v ZOE** (sklad mínus objednávky už exportované do ZOE) **- množstvo produktu v objednávkach, ktoré ešte neboli exportované do ZOE** (objednávky v stave Spracováva sa / Pozastavená, ktorým už WooCommerce znížil sklad)
+
+- produkty sa párujú podľa SKU
+- aktualizujú sa iba produkty a varianty, ktoré majú priamo na sebe zapnuté "Spravovať sklad"
+- skladová zásoba sa nikdy nenastaví pod 0
+- priebeh a výsledky sa zapisujú do WordPress debug.log s prefixom `[Kika StockSync]`
 
 ### Hooks
 Pre vývojárov, ktorí potrebujú reagovať na notifikácie z fullfilment systému ZOE, plugin spúšťa nasledovné WordPress hooky. Všetky hooky dostávajú ako prvý parameter aktuálnu `WC_Order`.
